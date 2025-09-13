@@ -35,7 +35,7 @@ const formSchema = z.object({
 
   licenseNumber: z.string().regex(/^[A-Za-z0-9\-\s]{5,20}$/, {
     message:
-      "License number must be 5–20 characters (letters, numbers, dashes, spaces allowed)",
+      "Number must be 5–20 characters (letters, numbers, dashes, spaces allowed)",
   }),
 
   password: z
@@ -92,7 +92,7 @@ const RiderSignUp = () => {
           <div className="flex flex-col justify-center bg-white rounded-xl shadow-lg p-8 w-full md:w-1/2">
             <div className="w-full max-w-md mx-auto">
               <form className="space-y-6" onSubmit={handleSubmit(onSubmitAll)}>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4">
                   <InputField
                     register={register}
                     name="FullName"
