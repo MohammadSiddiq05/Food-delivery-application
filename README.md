@@ -6,4 +6,4 @@ Recently I designed its architecture and now implementing it.
 
 ## Architecture Diagram  
 
-![Food App Architecture]("./FoodApp Architecture.png")
+![Food App Architecture]("./FoodApp%20Architecture.png")
