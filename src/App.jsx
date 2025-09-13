@@ -9,7 +9,7 @@ import SellerLogin from "./pages/Seller/SellerLogin";
 import RiderSignUp from "./pages/Rider/RiderSignUp";
 import RiderLogin from "./pages/Rider/RiderLogin";
 import CustomerPage from "./pages/Customer/CustomerPage";
-import SellerPage from "./pages/Seller/SellerPage";
+import SellerPage from "./pages/Seller/SellerDashboard/SellerPage";
 import RiderPage from "./pages/Rider/RiderPage";
 
 
