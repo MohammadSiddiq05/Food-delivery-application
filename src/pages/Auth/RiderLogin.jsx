@@ -2,10 +2,10 @@ import { useForm } from "react-hook-form";
 import logo from "../../assets/Logo.png";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import InputField from "../../components/InputField";
-import { loginUser } from "../../firebase/auth";
-import BtnSignUp from "../../components/BtnSignUp";
+import { loginUser } from "../../config/firebase/auth";
 import { useNavigate } from "react-router-dom";
+import InputField from "../../components/ui/InputField";
+import BtnSignUp from "../../components/ui/BtnSignUp";
 
 const formSchema = z.object({
   Email: z
@@ -17,16 +17,15 @@ const formSchema = z.object({
 
   password: z
     .string()
-    .min(8, { message: "Your password must be more than 8 characters" })
-    .regex(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-      {
-        message:
-          "At least 1 uppercase letter, 1 lowercase letter, 1 digit, and 1 special character",
-      }
-    ),
+    .min(6, { message: "Password must be at least 6 characters" })
+    .regex(/[a-z]/, { message: "Must include at least 1 lowercase letter" })
+    .regex(/[A-Z]/, { message: "Must include at least 1 uppercase letter" })
+    .regex(/\d/, { message: "Must include at least 1 number" })
+    .regex(/[@$!%*?&]/, {
+      message: "Must include at least 1 special character (@$!%*?&)",
+    }),
 });
-const SellerLogin = () => {
+const RiderLogin = () => {
   const {
     register,
     handleSubmit,
@@ -37,7 +36,8 @@ const SellerLogin = () => {
   const onSubmitAll = async (data) => {
     try {
       await loginUser(data.Email, data.password);
-      navigate('/SellerPage')
+      navigate('/RiderPage')
+
     } catch (error) {
       alert(error.message);
     }
@@ -80,7 +80,7 @@ const SellerLogin = () => {
                   </p>
                 }
                 btnText={"Login"}
-                linkTo={"../SellerDashboard/SellerSignUp"}
+                linkTo={"/RiderSignUp"}
               />
             </form>
           </div>
@@ -90,4 +90,4 @@ const SellerLogin = () => {
   );
 };
 
-export default SellerLogin;
+export default RiderLogin;

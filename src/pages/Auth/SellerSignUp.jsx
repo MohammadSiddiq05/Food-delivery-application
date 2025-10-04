@@ -2,20 +2,28 @@ import { useForm } from "react-hook-form";
 import logo from "../../assets/Logo.png";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import InputField from "../../components/InputField";
-import BtnSignUp from "../../components/BtnSignUp";
-import { registerUser } from "../../firebase/auth";
+import { registerUser } from "../../config/firebase/auth";
 import { useNavigate } from "react-router-dom";
-
+import InputField from "../../components/ui/InputField";
+import BtnSignUp from "../../components/ui/BtnSignUp";
 
 const formSchema = z.object({
-  FullName: z
+  restaurantName: z
     .string()
     .min(2, {
-      message: "Your name must have more than 2 characters",
+      message: "Your restaurant name must have more than 2 characters",
     })
     .max(20, {
-      message: "Your name must have less than 20 characters",
+      message: "Your restaurant name must have less than 20 characters",
+    }),
+
+  ownerName: z
+    .string()
+    .min(2, {
+      message: "owner name must have more than 2 characters",
+    })
+    .max(20, {
+      message: "owner name must have less than 20 characters",
     }),
 
   Email: z
@@ -29,63 +37,62 @@ const formSchema = z.object({
     .string()
     .regex(/^\+?[0-9]{10,15}$/, { message: "Enter number with country code" }),
 
-  vehicleType: z.string().regex(/^(Car|Bike|Truck|Bus|Van)$/i, {
-    message: "Vehicle type must be Car, Bike, Truck, Bus, or Van",
-  }),
-
-  licenseNumber: z.string().regex(/^[A-Za-z0-9\-\s]{5,20}$/, {
-    message:
-      "Number must be 5–20 characters (letters, numbers, dashes, spaces allowed)",
-  }),
-
-  password: z
+  restaurantAddress: z
     .string()
-    .min(8, { message: "Your password must be more than 8 characters" })
-    .regex(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-      {
-        message:
-          "At least 1 uppercase letter, 1 lowercase letter, 1 digit, and 1 special character",
-      }
-    ),
+    .min(5, { message: "Address must be at least 5 characters long" })
+    .max(100, { message: "Address must be less than 100 characters" })
+    .regex(/^[a-zA-Z0-9\s,.\-/#]+$/, {
+      message:
+        "Address can only contain letters, numbers, spaces, commas, dots, and dashes",
+    }),
+
+password: z
+    .string()
+    .min(6, { message: "Password must be at least 6 characters" })
+    .regex(/[a-z]/, { message: "Must include at least 1 lowercase letter" })
+    .regex(/[A-Z]/, { message: "Must include at least 1 uppercase letter" })
+    .regex(/\d/, { message: "Must include at least 1 number" })
+    .regex(/[@$!%*?&]/, {
+      message: "Must include at least 1 special character (@$!%*?&)",
+    }),
 });
-const RiderSignUp = () => {
+
+const SellerSignUp = () => {
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm({
-    resolver: zodResolver(formSchema),
-  });
+  } = useForm({ resolver: zodResolver(formSchema) });
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const onSubmitAll = async (data) => {
     try {
       await registerUser({
         email: data.Email,
         password: data.password,
-        role: "rider",
+        role: "seller",
         extraData: {
-          name: data.FullName,
+          restaurantName: data.restaurantName,
+          ownerName: data.ownerName,
           phone: data.phoneNumber,
-          vehicleType: data.vehicleType,
-          licenseNumber: data.licenseNumber
-        }
+          address: data.restaurantAddress,
+        },
       });
-      navigate("/RiderLogin");
+      navigate("/SellerPage");
     } catch (err) {
       alert(err.message);
     }
   };
+
   return (
     <>
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 py-8">
+      <div className="min-h-screen flex items-center justify-center col-span-2 bg-gray-50 py-8">
         <div className="flex flex-col md:flex-row w-11/12 max-w-5xl gap-8 md:gap-12">
           <div className="flex flex-col justify-center items-center p-8 w-1/2">
             <img src={logo} alt="App Icon" className="mb-4" />
             <p className="text-lg text-[#0E2A45] text-center leading-relaxed">
-              Deliver Fast • Earn Smart <br />
-              Join FoodZilla Riders 🚴
+              Manage Your Restaurant <br />
+              Grow with FoodZilla 🍴
             </p>
           </div>
 
@@ -95,10 +102,18 @@ const RiderSignUp = () => {
                 <div className="grid grid-cols-1 gap-4">
                   <InputField
                     register={register}
-                    name="FullName"
+                    name="restaurantName"
                     type="text"
-                    placeholder="Full Name"
-                    error={errors.FullName}
+                    placeholder="Restaurant Name"
+                    error={errors.restaurantName}
+                  />
+
+                  <InputField
+                    register={register}
+                    name="ownerName"
+                    type="text"
+                    placeholder="Owner Name"
+                    error={errors.ownerName}
                   />
                   <InputField
                     register={register}
@@ -107,7 +122,6 @@ const RiderSignUp = () => {
                     placeholder="Email"
                     error={errors.Email}
                   />
-
                   <InputField
                     register={register}
                     name="phoneNumber"
@@ -118,19 +132,11 @@ const RiderSignUp = () => {
 
                   <InputField
                     register={register}
-                    name="vehicleType"
+                    name="restaurantAddress"
                     type="text"
-                    placeholder="vehicle Type"
-                    error={errors.vehicleType}
+                    placeholder="Restaurant Address"
+                    error={errors.restaurantAddress}
                   />
-                  <InputField
-                    register={register}
-                    name="licenseNumber"
-                    type="text"
-                    placeholder="License Number"
-                    error={errors.licenseNumber}
-                  />
-
                   <InputField
                     register={register}
                     name="password"
@@ -141,7 +147,7 @@ const RiderSignUp = () => {
                 </div>
                 <BtnSignUp
                   isSubmitting={isSubmitting}
-                  linkTo={"/RiderLogin"}
+                  linkTo={"/SellerLogin"}
                   linkText={
                     <p className="text-gray-600">
                       Already have an account ?{" "}
@@ -159,4 +165,4 @@ const RiderSignUp = () => {
   );
 };
 
-export default RiderSignUp;
+export default SellerSignUp;

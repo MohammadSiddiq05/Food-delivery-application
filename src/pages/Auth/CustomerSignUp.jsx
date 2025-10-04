@@ -2,13 +2,17 @@ import { useForm } from "react-hook-form";
 import logo from "../../assets/Logo.png";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import InputField from "../../components/InputField";
-
-import { loginUser } from "../../firebase/auth";
-import BtnSignUp from "../../components/BtnSignUp";
+import { registerUser } from "../../config/firebase/auth";
 import { useNavigate } from "react-router-dom";
+import InputField from "../../components/ui/InputField";
+import BtnSignUp from "../../components/ui/BtnSignUp";
 
 const formSchema = z.object({
+  FullName: z
+    .string()
+    .min(2, { message: "Your full name must have more than 2 characters" })
+    .max(20, { message: "Your full name must have less than 20 characters" }),
+
   Email: z
     .string()
     .email({ message: "Enter a valid email" })
@@ -16,32 +20,42 @@ const formSchema = z.object({
       message: "Email is not valid",
     }),
 
+  phoneNumber: z
+    .string()
+    .regex(/^\+?[0-9]{10,15}$/, { message: "Enter number with country code" }),
+
   password: z
     .string()
-    .min(8, { message: "Your password must be more than 8 characters" })
-    .regex(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-      {
-        message:
-          "At least 1 uppercase letter, 1 lowercase letter, 1 digit, and 1 special character",
-      }
-    ),
+    .min(6, { message: "Password must be at least 6 characters" })
+    .regex(/[a-z]/, { message: "Must include at least 1 lowercase letter" })
+    .regex(/[A-Z]/, { message: "Must include at least 1 uppercase letter" })
+    .regex(/\d/, { message: "Must include at least 1 number" })
+    .regex(/[@$!%*?&]/, {
+      message: "Must include at least 1 special character (@$!%*?&)",
+    }),
 });
 
-const CustomerLogin = () => {
+const CustomerSignUp = () => {
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm({ resolver: zodResolver(formSchema) });
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const onSubmitAll = async (data) => {
     try {
-      await loginUser(data.Email, data.password);
-      navigate('/CustomerPage')
-
+      await registerUser({
+        email: data.Email,
+        password: data.password,
+        role: "customer",
+        extraData: {
+          name: data.FullName,
+          phone: data.phoneNumber,
+        },
+      });
+      navigate("/CustomerPage");
     } catch (error) {
       console.error("Login Failed:", error.message);
       alert(error.message);
@@ -63,10 +77,24 @@ const CustomerLogin = () => {
             <form className="space-y-4" onSubmit={handleSubmit(onSubmitAll)}>
               <InputField
                 register={register}
+                name="FullName"
+                type="text"
+                placeholder="Full Name"
+                error={errors.FullName}
+              />
+              <InputField
+                register={register}
                 name="Email"
                 type="email"
                 placeholder="Email"
                 error={errors.Email}
+              />
+              <InputField
+                register={register}
+                name="phoneNumber"
+                type="text"
+                placeholder="Phone Number(with country code)"
+                error={errors.phoneNumber}
               />
               <InputField
                 register={register}
@@ -78,14 +106,14 @@ const CustomerLogin = () => {
 
               <BtnSignUp
                 isSubmitting={isSubmitting}
+                linkTo={"/CustomerLogin"}
                 linkText={
                   <p className="text-gray-600">
-                    Create an account ?{" "}
-                    <span className="text-[#E64D21]">Sign Up</span>
+                    Already have an account ?{" "}
+                    <span className="text-[#E64D21]">Sign In</span>
                   </p>
                 }
-                btnText={"Login"}
-                linkTo={"/CustomerSignUp"}
+                btnText={"Sign Up"}
               />
             </form>
           </div>
@@ -95,4 +123,4 @@ const CustomerLogin = () => {
   );
 };
 
-export default CustomerLogin;
+export default CustomerSignUp;
