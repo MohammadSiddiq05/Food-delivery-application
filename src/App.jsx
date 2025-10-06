@@ -1,40 +1,91 @@
-import { BrowserRouter, Routes, Route } from "react-router";
-import Main from "./pages/Main";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { useState } from "react";
+import StoreContextProvider from "./context/StoreContext";
+import Navbar from "./components/Navbar/Navbar";
+import Footer from "./components/layout/Footer";
+import LoginPopup from "./components/LoginPopup/LoginPopup";
+import Home from "./pages/customer/Home/Home";
+import Cart from "./pages/Cart/Cart";
+import PlaceOrder from "./pages/customer/PlaceOrder/PlaceOrder";
+import PrivateRoute from "./routes/PrivateRoute";
+import CustomerPage from "./pages/customer/CustomerPage";
 import CustomerSignUp from "./pages/Auth/CustomerSignUp";
 import CustomerLogin from "./pages/Auth/CustomerLogin";
 import SellerSignUp from "./pages/Auth/SellerSignUp";
 import SellerLogin from "./pages/Auth/SellerLogin";
+import SellerPage from "./pages/Seller/SellerPage";
 import RiderSignUp from "./pages/Auth/RiderSignUp";
 import RiderLogin from "./pages/Auth/RiderLogin";
-import CustomerPage from "./pages/customer/CustomerPage";
-import SellerPage from "./pages/Seller/SellerPage";
 import RiderPage from "./pages/rider/RiderPage";
-import Footer from "./components/layout/Footer";
+import Main from './pages/Main'
 
-const App = () => {
+const AppContent = ({ setShowLogin, showLogin }) => {
+  const location = useLocation();
+
+  // yahan specify karo kin routes pe Navbar/Footer nahi dikhana
+  const hideNavbarFooterRoutes = ["/SellerPage", "/RiderPage", "/Main", "/CustomerSignUp","/CustomerLogin" ];
+
+  const shouldHide = hideNavbarFooterRoutes.includes(location.pathname);
+
   return (
     <>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Main />} />
+      {showLogin && <LoginPopup setShowLogin={setShowLogin} />}
+      {!shouldHide && <Navbar setShowLogin={setShowLogin} />}
 
-          <Route path="/CustomerSignUp" element={<CustomerSignUp />} />
-          <Route path="/CustomerLogin" element={<CustomerLogin />} />
-          <Route path="/CustomerPage" element={<CustomerPage />} />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/order" element={<PlaceOrder />} />
 
-          <Route path="/SellerSignUp" element={<SellerSignUp />}></Route>
-          <Route path="/SellerLogin" element={<SellerLogin />} />
-          <Route path="/SellerPage" element={<SellerPage />} />
+        <Route path="/CustomerSignUp" element={<CustomerSignUp />} />
+        <Route path="/CustomerLogin" element={<CustomerLogin />} />
+        <Route
+          path="/CustomerPage"
+          element={
+            <PrivateRoute allowedRole="customer">
+              <CustomerPage />
+            </PrivateRoute>
+          }
+        />
 
-          <Route path="/RiderSignUp" element={<RiderSignUp />} />
-          <Route path="/RiderLogin" element={<RiderLogin />} />
-          <Route path="/RiderPage" element={<RiderPage />} />
+        <Route path="/SellerSignUp" element={<SellerSignUp />} />
+        <Route path="/SellerLogin" element={<SellerLogin />} />
+        <Route
+          path="/SellerPage"
+          element={
+            <PrivateRoute allowedRole="seller">
+              <SellerPage />
+            </PrivateRoute>
+          }
+        />
 
-        </Routes>
-      </BrowserRouter>
+        <Route path="/RiderSignUp" element={<RiderSignUp />} />
+        <Route path="/RiderLogin" element={<RiderLogin />} />
+        <Route
+          path="/RiderPage"
+          element={
+            <PrivateRoute allowedRole="rider">
+              <RiderPage />
+            </PrivateRoute>
+          }
+        />
+        <Route path="/Main" element={<Main/>}/>
+      </Routes>
 
       <Footer />
     </>
+  );
+};
+
+const App = () => {
+  const [showLogin, setShowLogin] = useState(false);
+
+  return (
+    <StoreContextProvider>
+      <BrowserRouter>
+        <AppContent setShowLogin={setShowLogin} showLogin={showLogin} />
+      </BrowserRouter>
+    </StoreContextProvider>
   );
 };
 

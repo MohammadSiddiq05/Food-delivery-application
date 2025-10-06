@@ -64,21 +64,31 @@ const SellerSignUp = () => {
     formState: { errors, isSubmitting },
   } = useForm({ resolver: zodResolver(formSchema) });
 
-  const navigate = useNavigate();
+  let navigate = useNavigate();
+
   const onSubmitAll = async (data) => {
-    try {
-      await registerUser({
-        email: data.Email,
-        password: data.password,
-        role: "seller",
-        extraData: {
-          restaurantName: data.restaurantName,
-          ownerName: data.ownerName,
-          phone: data.phoneNumber,
-          address: data.restaurantAddress,
-        },
-      });
-      navigate("/SellerPage");
+     try {
+    const userCred = await registerUser({
+      email: data.Email,
+      password: data.password,
+      role: "seller",
+      extraData: {
+        restaurantName: data.restaurantName,
+        ownerName: data.ownerName,
+        phone: data.phoneNumber,
+        address: data.restaurantAddress,
+      },
+    });
+
+    const userData = {
+      uid: userCred.user.uid,
+      email: data.Email,
+      role: "seller",
+    };
+    localStorage.setItem("user", JSON.stringify(userData));
+      if(data.Email){
+        navigate("/SellerPage")
+      }
     } catch (err) {
       alert(err.message);
     }
