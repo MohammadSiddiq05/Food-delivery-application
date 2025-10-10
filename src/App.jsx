@@ -3,7 +3,6 @@ import { useState } from "react";
 import StoreContextProvider from "./context/StoreContext";
 import Navbar from "./components/Navbar/Navbar";
 import Footer from "./components/layout/Footer";
-import LoginPopup from "./components/LoginPopup/LoginPopup";
 import Home from "./pages/customer/Home/Home";
 import Cart from "./pages/Cart/Cart";
 import PlaceOrder from "./pages/customer/PlaceOrder/PlaceOrder";
@@ -22,14 +21,12 @@ import Main from './pages/Main'
 const AppContent = ({ setShowLogin, showLogin }) => {
   const location = useLocation();
 
-  // yahan specify karo kin routes pe Navbar/Footer nahi dikhana
-  const hideNavbarFooterRoutes = ["/SellerPage", "/RiderPage", "/Main", "/CustomerSignUp","/CustomerLogin" ];
+  const hideNavbarFooterRoutes = ["/SellerPage", "/RiderPage", "/Main", "/CustomerSignUp","/CustomerLogin","/SellerSignUp", "/SellerLogin", "/RiderSignUp", "/RiderLogin"  ];
 
   const shouldHide = hideNavbarFooterRoutes.includes(location.pathname);
 
   return (
     <>
-      {showLogin && <LoginPopup setShowLogin={setShowLogin} />}
       {!shouldHide && <Navbar setShowLogin={setShowLogin} />}
 
       <Routes>

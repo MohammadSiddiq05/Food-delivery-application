@@ -12,6 +12,11 @@ import ChartSection from "../../components/charts/ChartSection";
 import TableSection from "../../components/charts/TableSection";
 import StatsGrid from "../../components/charts/StatsGrid";
 
+
+
+
+import { stats, menuItems } from "../../data/Stats";
+
 const SellerPage = () => {
   const [sidebarMenu, setSidebarMenu] = useState(false);
   const [currentPage, setCurrentPage] = useState("dashboard");
@@ -23,12 +28,15 @@ const SellerPage = () => {
           onToggle={() => setSidebarMenu(!sidebarMenu)}
           currentPage={currentPage}
           onPageChange={setCurrentPage}
+          menuItems={menuItems}
+          title="FoodZilla"
+          subtitle="Vendor Dashboard"
+          user={{ name: "Siddiq Shah", role: "Administrator" }}
         />
         <div className="flex-1 flex flex-col overflow-hidden">
           <Header
             menuCollapsed={sidebarMenu}
             onToggleSidebar={() => setSidebarMenu(!sidebarMenu)}
-            
           />
 
           <main className="flex-1 overflow-y-auto bg-transparent">
@@ -36,7 +44,7 @@ const SellerPage = () => {
               {currentPage === "dashboard" && <Dashboard />}
               {currentPage === "overview" && (
                 <>
-                  <StatsGrid />
+                  <StatsGrid stats={stats} />
                   <ChartSection />
                   <TableSection />
                 </>
@@ -50,7 +58,6 @@ const SellerPage = () => {
               {currentPage === "messages" && <Messages />}
             </div>
           </main>
-          
         </div>
       </div>
     </div>

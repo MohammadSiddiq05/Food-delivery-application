@@ -10,13 +10,13 @@ const Navbar = ({ setShowLogin }) => {
   const [menu, setMenu] = useState("home");
 
   return (
-    <nav className="flex justify-between items-center w-[90%] mx-auto py-5">
+    <nav className="flex justify-around items-center w-full mx-auto py-3 border-b border-[#0E2A45]">
       {/* Logo */}
       <Link to="/">
         <img
           src={assets.logo}
           alt="logo"
-          className="w-[150px] max-[1050px]:w-[140px] max-[900px]:w-[120px]"
+          className="w-[100px] max-[1050px]:w-[140px] max-[900px]:w-[120px]"
         />
       </Link>
 
@@ -87,17 +87,16 @@ const Navbar = ({ setShowLogin }) => {
             />
           </Link>
           {totalQuantity > 0 && (
-            <div className="absolute -top-2 -right-2 min-w-[20px] min-h-[20px] bg-primary rounded-full flex items-center justify-center">
-              <p className="text-white text-[12px] leading-[12px]">
-                {totalQuantity}
-              </p>
-            </div>
+          <div className="absolute -top-2 -right-2 flex items-center justify-center bg-[#E64D21] text-white text-xs font-semibold rounded-full w-5 h-5 shadow-md">
+  {totalQuantity}
+</div>
+
           )}
         </div>
 
         {/* Button */}
         <Link to={"/Main"}>
-          <button className="bg-transparent text-gray-800 border border-primary rounded-full px-8 py-2 text-[16px] transition hover:bg-[#fff4f2] max-[1050px]:px-6 max-[900px]:px-5 max-[900px]:text-[14px]">
+          <button className="bg-[#0E2A45] text-white border border-primary rounded-lg px-8 py-2 text-[16px] hover:bg-[#E64D21] max-[1050px]:px-6 max-[900px]:px-5 max-[900px]:text-[14px] cursor-pointer transition duration-300">
             Sign in
           </button>
         </Link>

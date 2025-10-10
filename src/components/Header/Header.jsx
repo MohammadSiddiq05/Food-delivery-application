@@ -31,7 +31,7 @@ const Header = () => {
 
         <a href="#explore-menu">
           <button
-            className="bg-white text-gray-600 font-medium border-none rounded-full 
+            className="bg-[#0E2A45] text-white font-medium border-none rounded-lg 
             px-[2.3vw] py-[1vw] text-[max(1vw,13px)] cursor-pointer
             max-[750px]:px-[4vw] max-[750px]:py-[2vw] max-[600px]:px-[3.5vw] max-[600px]:py-[2vw]"
           >

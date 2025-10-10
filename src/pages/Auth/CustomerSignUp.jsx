@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import logo from "../../assets/Logo.png";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { email, z } from "zod";
 import { registerUser } from "../../config/firebase/auth";
 import { useNavigate } from "react-router-dom";
 import InputField from "../../components/ui/InputField";
@@ -46,16 +46,26 @@ const CustomerSignUp = () => {
 
   const onSubmitAll = async (data) => {
     try {
-      await registerUser({
-        email: data.Email,
-        password: data.password,
-        role: "customer",
-        extraData: {
-          name: data.FullName,
-          phone: data.phoneNumber,
-        },
-      });
-      navigate("/CustomerPage");
+      const userCred = await registerUser(
+        {
+          email:data.Email,
+          password:data.password,
+          role:"customer",
+          extraData:{
+            fullName: data.FullName,
+            phoneNumber: data.phoneNumber,
+          }
+        }
+      )
+      const userData = {
+      uid: userCred.user.uid,
+      email: data.Email,
+      role: "customer",
+    };
+    localStorage.setItem("user", JSON.stringify(userData));
+      if(data.Email){
+        navigate("/")
+      }
     } catch (error) {
       console.error("Login Failed:", error.message);
       alert(error.message);

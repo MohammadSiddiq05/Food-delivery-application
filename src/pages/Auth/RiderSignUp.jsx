@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 import InputField from "../../components/ui/InputField";
 import BtnSignUp from "../../components/ui/BtnSignUp";
 
-
 const formSchema = z.object({
   FullName: z
     .string()
@@ -57,10 +56,10 @@ const RiderSignUp = () => {
     resolver: zodResolver(formSchema),
   });
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const onSubmitAll = async (data) => {
     try {
-      await registerUser({
+      const userCred = await registerUser({
         email: data.Email,
         password: data.password,
         role: "rider",
@@ -68,10 +67,19 @@ const RiderSignUp = () => {
           name: data.FullName,
           phone: data.phoneNumber,
           vehicleType: data.vehicleType,
-          licenseNumber: data.licenseNumber
-        }
+          licenseNumber: data.licenseNumber,
+        },
       });
-      navigate("/RiderPage");
+
+      const userData = {
+        uid: userCred.user.uid,
+        email: userCred.Email,
+        role: "rider",
+      };
+      localStorage.setItem("user", JSON.stringify(userData));
+      if (userData) {
+        navigate("/RiderPage");
+      }
     } catch (err) {
       alert(err.message);
     }

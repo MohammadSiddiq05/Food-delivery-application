@@ -26,11 +26,11 @@ const formSchema = z.object({
       message: "owner name must have less than 20 characters",
     }),
 
-  Email: z
+  email: z
     .string()
     .email({ message: "Enter a valid email" })
     .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, {
-      message: "Email is not valid",
+      message: "email is not valid",
     }),
 
   phoneNumber: z
@@ -69,7 +69,7 @@ const SellerSignUp = () => {
   const onSubmitAll = async (data) => {
      try {
     const userCred = await registerUser({
-      email: data.Email,
+      email: data.email,
       password: data.password,
       role: "seller",
       extraData: {
@@ -82,11 +82,11 @@ const SellerSignUp = () => {
 
     const userData = {
       uid: userCred.user.uid,
-      email: data.Email,
+      email: data.email,
       role: "seller",
     };
-    localStorage.setItem("user", JSON.stringify(userData));
-      if(data.Email){
+    localStorage.setItem("user", JSON.stringify({userData}));
+      if(data.email){
         navigate("/SellerPage")
       }
     } catch (err) {
@@ -127,10 +127,10 @@ const SellerSignUp = () => {
                   />
                   <InputField
                     register={register}
-                    name="Email"
+                    name="email"
                     type="email"
-                    placeholder="Email"
-                    error={errors.Email}
+                    placeholder="email"
+                    error={errors.email}
                   />
                   <InputField
                     register={register}

@@ -8,14 +8,14 @@ import InputField from "../../components/ui/InputField";
 import BtnSignUp from "../../components/ui/BtnSignUp";
 
 const formSchema = z.object({
-  Email: z
+  email: z
     .string()
     .email({ message: "Enter a valid email" })
     .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, {
-      message: "Email is not valid",
+      message: "email is not valid",
     }),
 
-password: z
+  password: z
     .string()
     .min(6, { message: "Password must be at least 6 characters" })
     .regex(/[a-z]/, { message: "Must include at least 1 lowercase letter" })
@@ -32,15 +32,25 @@ const SellerLogin = () => {
     formState: { errors, isSubmitting },
   } = useForm({ resolver: zodResolver(formSchema) });
 
-  const navigate = useNavigate()
-  const onSubmitAll = async (data) => {
-    try {
-      await loginUser(data.Email, data.password);
-      navigate('/SellerPage')
-    } catch (error) {
-      alert(error.message);
-    }
-  };
+  let navigate = useNavigate();
+
+ const onSubmitAll = async (data) => {
+  try {
+    const userCred = await loginUser(data.email, data.password);
+
+    const userData = {
+      uid: userCred.user.uid,
+      email: data.email,
+      role: "seller",
+    };
+
+    localStorage.setItem("user", JSON.stringify(userData));
+    navigate("/SellerPage");
+  } catch (err) {
+    alert(err.message);
+  }
+};
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-8">
@@ -57,10 +67,10 @@ const SellerLogin = () => {
             <form className="space-y-4" onSubmit={handleSubmit(onSubmitAll)}>
               <InputField
                 register={register}
-                name="Email"
+                name="email"
                 type="email"
-                placeholder="Email"
-                error={errors.Email}
+                placeholder="email"
+                error={errors.email}
               />
               <InputField
                 register={register}

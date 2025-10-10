@@ -1,54 +1,16 @@
-import {
-  BarChart3,
-  ChevronDown,
-  CreditCard,
-  LayoutDashboard,
-  MessageSquare,
-  Package,
-  ShoppingBag,
-} from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 import logo from "../../assets/Logo.png";
 
-const menuItems = [
-  {
-    id: "dashboard",
-    icon: LayoutDashboard,
-    label: "Dashboard",
-  },
-  {
-    id: "analytics",
-    icon: BarChart3,
-    label: "Analytics",
-    subMenu: [
-      { id: "overview", label: "Overview" },
-      { id: "reports", label: "Reports" },
-      { id: "insights", label: "Insights" },
-    ],
-  },
-  {
-    id: "order",
-    icon: ShoppingBag,
-    label: "Orders",
-  },
-  {
-    id: "inventory",
-    icon: Package,
-    label: "Products",
-  },
-  {
-    id: "transaction",
-    icon: CreditCard,
-    label: "Payments/Transactions",
-  },
-  {
-    id: "messages",
-    icon: MessageSquare,
-    label: "Message",
-  },
-];
-
-const Sidebar = ({ menu, currentPage, onPageChange }) => {
+const Sidebar = ({
+  menu,
+  currentPage,
+  onPageChange,
+  menuItems,
+  title,
+  subtitle,
+  user,
+}) => {
   const [expandItems, setExpandItems] = useState(new Set(["analytics"]));
 
   const toggleExpanded = (itemId) => {
@@ -77,10 +39,10 @@ const Sidebar = ({ menu, currentPage, onPageChange }) => {
           {!menu && (
             <div>
               <h1 className="text-xl font-bold text-slate-800 dark:text-white">
-                FoodZilla
+                {title}
               </h1>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Vendor Dashboard
+                {subtitle}
               </p>
             </div>
           )}
@@ -151,9 +113,9 @@ const Sidebar = ({ menu, currentPage, onPageChange }) => {
             <div className="flex-1 min-w-0 ">
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-slate-800 dark:text-white truncate">
-                  Siddiq Shah
+                  {user.name}
                 </p>
-                <p className="text-xs text-slate-500 truncate">Administrator</p>
+                <p className="text-xs text-slate-500 truncate">{user.role}</p>
               </div>
             </div>
           </div>
