@@ -1,11 +1,16 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { StoreContext } from "../../context/StoreContext";
 import { useNavigate } from "react-router-dom";
 import { assets } from "../../assets/assets";
+import { Modal, Box, Typography, Button } from "@mui/material";
 
 export const deliveryFee = 2;
 
 const Cart = () => {
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
   const {
     cartItems,
     food_list,
@@ -16,9 +21,32 @@ const Cart = () => {
 
   const totalQuantity = getTotalQuantity();
   const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const handleCheckout = () => {
+    if (!user) {
+      handleOpen(); 
+    } else {
+      navigate("/order");
+    }
+  };
+
+  // ✅ Modal Style
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 380,
+    bgcolor: "background.paper",
+    borderRadius: "16px",
+    boxShadow: 24,
+    p: 4,
+    textAlign: "center",
+  };
 
   return (
-    <div className="p-6">
+    <div className="p-6 mt-20">
       {/* Cart Items Table */}
       <div className="w-full overflow-x-auto flex flex-col justify-center border rounded-xl shadow-md bg-white p-6">
         {/* Table Header */}
@@ -109,19 +137,17 @@ const Cart = () => {
           </div>
 
           <div className="flex justify-center mt-8">
-  <button
-    disabled={getTotalCartAmount() === 0}
-    onClick={() => navigate("/order")}
-    className={`w-full  py-3 rounded-lg font-semibold text-white transition-all duration-300 ${
-      getTotalCartAmount() !== 0
-        ? "bg-[#0E2A45] hover:bg-[#E64D21] shadow-md hover:shadow-lg"
-        : "bg-gray-400 cursor-not-allowed"
-    }`}
-  >
-    PROCEED TO CHECKOUT
-  </button>
-</div>
-
+            <button
+              disabled={getTotalCartAmount() === 0}
+              onClick={handleCheckout}
+              className={`w-full py-3 rounded-lg font-semibold text-white transition-all duration-300 ${getTotalCartAmount() !== 0
+                  ? "bg-[#0E2A45] hover:bg-[#E64D21] shadow-md hover:shadow-lg"
+                  : "bg-gray-400 cursor-not-allowed"
+                }`}
+            >
+              PROCEED TO CHECKOUT
+            </button>
+          </div>
         </div>
 
         {/* Promo Code */}
@@ -141,6 +167,59 @@ const Cart = () => {
           </div>
         </div>
       </div>
+
+      {/* MUI Sign-Up Modal */}
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="signup-modal-title"
+        aria-describedby="signup-modal-description"
+      >
+        <Box sx={style}>
+
+          <Typography
+            id="signup-modal-title"
+            variant="h6"
+            component="h2"
+            sx={{ color: "#0E2A45", fontWeight: 600, mb: 1 }}
+          >
+            Please Sign Up
+          </Typography>
+          <Typography
+            id="signup-modal-description"
+            sx={{ mt: 1, color: "text.secondary", mb: 3 }}
+          >
+            You need to sign up or log in before proceeding to checkout.
+          </Typography>
+          <Box sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
+            <Button
+              variant="contained"
+              onClick={() => navigate("/CustomerSignUp")}
+              sx={{
+                backgroundColor: "#E64D21",
+                "&:hover": { backgroundColor: "#0E2A45" },
+                borderRadius: "10px",
+                px: 3,
+              }}
+            >
+              Sign Up
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={handleClose}
+              sx={{
+                color: "#0E2A45",
+                borderColor: "#0E2A45",
+                "&:hover": { backgroundColor: "#0E2A45", color: "#fff" },
+                borderRadius: "10px",
+                px: 3,
+              }}
+            >
+              Close
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
     </div>
   );
 };

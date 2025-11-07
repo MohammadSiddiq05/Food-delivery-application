@@ -34,22 +34,22 @@ const SellerLogin = () => {
 
   let navigate = useNavigate();
 
- const onSubmitAll = async (data) => {
-  try {
-    const userCred = await loginUser(data.email, data.password);
+  const onSubmitAll = async (data) => {
+    try {
+      const userCred = await loginUser(data.email, data.password);
 
-    const userData = {
-      uid: userCred.user.uid,
-      email: data.email,
-      role: "seller",
-    };
+      const userData = {
+        uid: userCred.user.uid,
+        email: data.email,
+        role: "seller",
+      };
 
-    localStorage.setItem("user", JSON.stringify(userData));
-    navigate("/SellerPage");
-  } catch (err) {
-    alert(err.message);
-  }
-};
+      localStorage.setItem("user", JSON.stringify(userData));
+      navigate("/SellerPage");
+    } catch (err) {
+      alert(err.message);
+    }
+  };
 
 
   return (

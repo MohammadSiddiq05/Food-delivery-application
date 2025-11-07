@@ -1,6 +1,11 @@
 import { Bell, ChevronDown, Menu, Settings } from "lucide-react";
+import { useAuthContext } from "../../context/AuthContext";
+import { handleLogout } from "../../utils";
+import { useNavigate } from "react-router";
 
 const Header = ({ onToggleSidebar }) => {
+  const navigate = useNavigate()
+  const { state: { name } } = useAuthContext()
   return (
     <header className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-700/50 px-6 py-4">
       <div className="flex items-center justify-between">
@@ -17,20 +22,17 @@ const Header = ({ onToggleSidebar }) => {
               Dashboard
             </h1>
             <p className="text-[#0E2A45] dark:text-white">
-              Welcome back, Siddiq — here’s what’s happening today
+              Welcome back, {name.charAt(0).toUpperCase() + name.slice(1)} — here’s what’s happening today
             </p>
           </div>
         </div>
 
         {/* Right Section */}
         <div className="flex items-center space-x-3">
-          <button className="relative p-2.5 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-            <Bell className="size-5" />
+          <button className=" text-white border border-primary rounded-lg px-2 py-1 text-[16px] hover:bg-[#E64D21] max-[1050px]:px-6 max-[900px]:px-5 max-[900px]:text-[14px] cursor-pointer transition duration-300"
+            onClick={()=>handleLogout(navigate)}>
+            Log out
           </button>
-          <button className="p-2.5 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-            <Settings className="size-5" />
-          </button>
-
           {/* Profile */}
           <div className="flex items-center space-x-3 pl-3 border-l border-slate-200 dark:border-slate-700">
             <img
@@ -40,7 +42,7 @@ const Header = ({ onToggleSidebar }) => {
             />
             <div className="hidden md:block">
               <p className="text-sm font-medium text-[#0E2A45] dark:text-slate-400">
-                Siddiq Shah
+                {name.charAt(0).toUpperCase() + name.slice(1)}
               </p>
               <p className="text-xs text-[#0E2A45] dark:text-slate-400">
                 Administrator

@@ -1,29 +1,29 @@
-import { useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
+import { MessageSquare, Mail, Send, AlertCircle, Eye } from "lucide-react";
+import StatsGrid from "../../../components/charts/StatsGrid"; // ✅ Reusable stats component
 
+// Dummy messages
 const dummyMessages = [
   {
     id: 1,
-    customer: "Ali Khan",
-    email: "ali@example.com",
-    message: "I have an issue with my order.",
+    sender: "Ali Khan",
+    subject: "Product inquiry: Wireless Earbuds",
+    date: "2025-09-21",
     status: "Unread",
-    date: "2025-09-16",
   },
   {
     id: 2,
-    customer: "Sara Ahmed",
-    email: "sara@example.com",
-    message: "Can you update my shipping address?",
+    sender: "Sara Ahmed",
+    subject: "Order issue: TXN002",
+    date: "2025-09-22",
     status: "Replied",
-    date: "2025-09-17",
   },
   {
     id: 3,
-    customer: "Usman Raza",
-    email: "usman@example.com",
-    message: "Payment not reflected.",
-    status: "Unread",
-    date: "2025-09-15",
+    sender: "Usman Raza",
+    subject: "Partnership Request",
+    date: "2025-09-20",
+    status: "Pending",
   },
 ];
 
@@ -32,106 +32,151 @@ const Messages = () => {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
 
-  //  Filter + Search
+  // 🔍 Filter + Search Logic
   const filteredMessages = useMemo(() => {
     return messages.filter((msg) => {
       const matchesSearch =
-        msg.customer.toLowerCase().includes(search.toLowerCase()) ||
-        msg.email.toLowerCase().includes(search.toLowerCase());
-
+        msg.sender.toLowerCase().includes(search.toLowerCase()) ||
+        msg.subject.toLowerCase().includes(search.toLowerCase());
       const matchesStatus =
         statusFilter === "All" || msg.status === statusFilter;
-
       return matchesSearch && matchesStatus;
     });
   }, [messages, search, statusFilter]);
+
+  // 📊 Stats Section
+  const stats = [
+    {
+      title: "Total Messages",
+      value: messages.length,
+      change: "+5%",
+      trend: "up",
+      icon: MessageSquare,
+      color: "from-blue-500 to-indigo-500",
+      bgcolor: "bg-blue-100 dark:bg-blue-900/40",
+      textColor: "text-blue-600 dark:text-blue-400",
+    },
+    {
+      title: "Unread",
+      value: messages.filter((m) => m.status === "Unread").length,
+      change: "+2%",
+      trend: "up",
+      icon: Mail,
+      color: "from-red-400 to-pink-500",
+      bgcolor: "bg-red-100 dark:bg-red-900/40",
+      textColor: "text-red-500 dark:text-red-400",
+    },
+    {
+      title: "Replied",
+      value: messages.filter((m) => m.status === "Replied").length,
+      change: "+3%",
+      trend: "up",
+      icon: Send,
+      color: "from-green-400 to-emerald-500",
+      bgcolor: "bg-green-100 dark:bg-green-900/40",
+      textColor: "text-green-500 dark:text-green-400",
+    },
+    {
+      title: "Pending",
+      value: messages.filter((m) => m.status === "Pending").length,
+      change: "-1%",
+      trend: "down",
+      icon: AlertCircle,
+      color: "from-yellow-400 to-orange-500",
+      bgcolor: "bg-yellow-100 dark:bg-yellow-900/40",
+      textColor: "text-yellow-500 dark:text-yellow-400",
+    },
+  ];
 
   return (
     <div className="min-h-screen p-6 bg-slate-50 dark:bg-slate-900 transition-all duration-500 text-slate-800 dark:text-white">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Customer Messages</h1>
+        <h1 className="text-2xl font-bold">Messages & Inquiries</h1>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div className="p-4 bg-white dark:bg-slate-800 rounded shadow">
-          <p className="text-sm text-slate-500 dark:text-slate-400">
-            Total Messages
-          </p>
-          <p className="text-xl font-bold">{messages.length}</p>
-        </div>
-        <div className="p-4 bg-white dark:bg-slate-800 rounded shadow">
-          <p className="text-sm text-slate-500 dark:text-slate-400">Unread</p>
-          <p className="text-xl font-bold text-yellow-500 dark:text-yellow-400">
-            {messages.filter((m) => m.status === "Unread").length}
-          </p>
-        </div>
-        <div className="p-4 bg-white dark:bg-slate-800 rounded shadow">
-          <p className="text-sm text-slate-500 dark:text-slate-400">Replied</p>
-          <p className="text-xl font-bold text-green-600 dark:text-green-400">
-            {messages.filter((m) => m.status === "Replied").length}
-          </p>
-        </div>
-      </div>
+      {/* ✅ Stats Section */}
+      <StatsGrid stats={stats} />
 
       {/* Filters & Search */}
-      <div className="flex flex-col md:flex-row gap-4 mb-4">
+      <div className="flex flex-col md:flex-row gap-4 mt-6 mb-4">
         <input
           type="text"
-          placeholder="Search by Customer or Email..."
+          placeholder="Search by sender or subject..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="p-2 border border-slate-300 dark:border-slate-700 rounded w-full md:w-1/3 bg-white dark:bg-slate-800 dark:text-white"
+          className="border dark:border-slate-700 dark:bg-slate-900 rounded-lg p-2 w-1/3"
         />
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="p-2 border border-slate-300 dark:border-slate-700 rounded bg-white dark:bg-slate-800 dark:text-white"
+          className="border dark:border-slate-700 dark:bg-slate-900 rounded-lg p-2"
         >
-          <option value="All">All Statuses</option>
+          <option value="All">All</option>
           <option value="Unread">Unread</option>
           <option value="Replied">Replied</option>
+          <option value="Pending">Pending</option>
         </select>
       </div>
 
-      {/* Messages Table */}
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white dark:bg-slate-800 rounded shadow">
-          <thead className="bg-gray-200 dark:bg-slate-700 text-slate-700 dark:text-white">
+      {/* ✅ Message Table */}
+      <div className="p-6 bg-white dark:bg-slate-900 rounded-xl shadow overflow-x-auto">
+        <h2 className="text-lg font-semibold mb-4">All Messages</h2>
+        <table className="min-w-full text-left">
+          <thead>
             <tr>
-              <th className="p-2 text-left">Customer</th>
-              <th className="p-2 text-left">Email</th>
-              <th className="p-2 text-left">Message</th>
-              <th className="p-2 text-left">Status</th>
-              <th className="p-2 text-left">Date</th>
+              <th className="p-3 border-b dark:border-slate-700">Sender</th>
+              <th className="p-3 border-b dark:border-slate-700">Subject</th>
+              <th className="p-3 border-b dark:border-slate-700">Date</th>
+              <th className="p-3 border-b dark:border-slate-700">Status</th>
+              <th className="p-3 border-b dark:border-slate-700">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {filteredMessages.length > 0 ? (
-              filteredMessages.map((msg) => (
-                <tr
-                  key={msg.id}
-                  className="border-b border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700"
-                >
-                  <td className="p-2">{msg.customer}</td>
-                  <td className="p-2">{msg.email}</td>
-                  <td className="p-2">{msg.message}</td>
-                  <td
-                    className={`p-2 font-semibold ${
+            {filteredMessages.map((msg) => (
+              <tr
+                key={msg.id}
+                className="hover:bg-gray-50 dark:hover:bg-slate-800 transition"
+              >
+                <td className="p-3 border-b dark:border-slate-700">
+                  {msg.sender}
+                </td>
+                <td className="p-3 border-b dark:border-slate-700">
+                  {msg.subject}
+                </td>
+                <td className="p-3 border-b dark:border-slate-700">
+                  {msg.date}
+                </td>
+                <td className="p-3 border-b dark:border-slate-700">
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-medium ${
                       msg.status === "Unread"
-                        ? "text-yellow-500 dark:text-yellow-400"
-                        : "text-green-600 dark:text-green-400"
+                        ? "bg-red-100 text-red-700 dark:bg-red-800 dark:text-red-200"
+                        : msg.status === "Replied"
+                        ? "bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-200"
+                        : "bg-yellow-100 text-yellow-700 dark:bg-yellow-800 dark:text-yellow-200"
                     }`}
                   >
                     {msg.status}
-                  </td>
-                  <td className="p-2">{msg.date}</td>
-                </tr>
-              ))
-            ) : (
+                  </span>
+                </td>
+                <td className="p-3 border-b dark:border-slate-700">
+                  <button
+                    className="flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline"
+                    onClick={() => alert(`Viewing message from ${msg.sender}`)}
+                  >
+                    <Eye size={16} /> View
+                  </button>
+                </td>
+              </tr>
+            ))}
+
+            {filteredMessages.length === 0 && (
               <tr>
-                <td className="p-4 text-center" colSpan={5}>
+                <td
+                  colSpan="5"
+                  className="text-center py-4 text-gray-500 dark:text-slate-400"
+                >
                   No messages found.
                 </td>
               </tr>

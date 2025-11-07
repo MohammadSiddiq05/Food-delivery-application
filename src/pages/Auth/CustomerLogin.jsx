@@ -38,14 +38,19 @@ const CustomerLogin = () => {
   const onSubmitAll = async (data) => {
     try {
       await loginUser(data.Email, data.password);
-      navigate('/CustomerPage')
-
+      const userData = {
+        email: data.Email,
+        role: "customer",
+      };
+      localStorage.setItem("user", JSON.stringify(userData));
+      if (data.Email) {
+        navigate("/")
+      }
     } catch (error) {
       console.error("Login Failed:", error.message);
       alert(error.message);
     }
   };
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-8">
       <div className="flex flex-col md:flex-row w-11/12 max-w-5xl gap-8 md:gap-12">

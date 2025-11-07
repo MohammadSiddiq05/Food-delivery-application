@@ -4,7 +4,7 @@ const Header = () => {
   return (
     <header
       style={{ backgroundImage: `url(${header_img})` }}
-      className="relative w-[90%] h-[34vw] my-[30px] mx-auto rounded-[24px] bg-no-repeat bg-cover
+      className="relative w-[90%] h-[34vw] mb-[50px] mt-[130px] mx-auto rounded-[24px] bg-no-repeat bg-cover
   max-[1050px]:h-[40vw] max-[750px]:rounded-[16px]"
     >
       <div

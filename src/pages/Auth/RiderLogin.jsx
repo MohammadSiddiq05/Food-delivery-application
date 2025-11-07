@@ -36,7 +36,14 @@ const RiderLogin = () => {
   const onSubmitAll = async (data) => {
     try {
       await loginUser(data.Email, data.password);
-      navigate('/RiderPage')
+      const userData = {
+        email: data.Email,
+        role: "rider",
+      };
+      localStorage.setItem("user", JSON.stringify(userData));
+      if (data.Email) {
+        navigate('/RiderPage')
+      }
 
     } catch (error) {
       alert(error.message);

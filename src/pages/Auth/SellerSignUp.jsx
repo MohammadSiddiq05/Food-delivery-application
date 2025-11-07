@@ -6,6 +6,7 @@ import { registerUser } from "../../config/firebase/auth";
 import { useNavigate } from "react-router-dom";
 import InputField from "../../components/ui/InputField";
 import BtnSignUp from "../../components/ui/BtnSignUp";
+import { useAuthContext } from "../../context/AuthContext";
 
 const formSchema = z.object({
   restaurantName: z
@@ -17,7 +18,7 @@ const formSchema = z.object({
       message: "Your restaurant name must have less than 20 characters",
     }),
 
-  ownerName: z
+  name: z
     .string()
     .min(2, {
       message: "owner name must have more than 2 characters",
@@ -46,7 +47,7 @@ const formSchema = z.object({
         "Address can only contain letters, numbers, spaces, commas, dots, and dashes",
     }),
 
-password: z
+  password: z
     .string()
     .min(6, { message: "Password must be at least 6 characters" })
     .regex(/[a-z]/, { message: "Must include at least 1 lowercase letter" })
@@ -58,6 +59,8 @@ password: z
 });
 
 const SellerSignUp = () => {
+  const { state, dispatch } = useAuthContext();
+  // console.log(state, dispatch)
   const {
     register,
     handleSubmit,
@@ -67,33 +70,37 @@ const SellerSignUp = () => {
   let navigate = useNavigate();
 
   const onSubmitAll = async (data) => {
-     try {
-    const userCred = await registerUser({
-      email: data.email,
-      password: data.password,
-      role: "seller",
-      extraData: {
-        restaurantName: data.restaurantName,
-        ownerName: data.ownerName,
-        phone: data.phoneNumber,
-        address: data.restaurantAddress,
-      },
-    });
+    try {
+      const userCred = await registerUser({
+        // uid: userCred.user.uid,
+        email: data.email,
+        role: "seller",
+        password: data.password,
+        extraData: {
+          restaurantName: data.restaurantName,
+          name: data.name,
+          phone: data.phoneNumber,
+          address: data.restaurantAddress,
+        },
 
-    const userData = {
-      uid: userCred.user.uid,
-      email: data.email,
-      role: "seller",
-    };
-    localStorage.setItem("user", JSON.stringify({userData}));
-      if(data.email){
+      });
+      dispatch({
+        type: "REGISTER_USER",
+        payload: data
+      })
+      const userData = {
+        uid: userCred.user.uid,
+        email: userCred.user.email,
+        role: "seller",
+      }
+      localStorage.setItem("user", JSON.stringify(userData));
+      if (data.email) {
         navigate("/SellerPage")
       }
     } catch (err) {
       alert(err.message);
     }
   };
-
   return (
     <>
       <div className="min-h-screen flex items-center justify-center col-span-2 bg-gray-50 py-8">
@@ -120,10 +127,10 @@ const SellerSignUp = () => {
 
                   <InputField
                     register={register}
-                    name="ownerName"
+                    name="name"
                     type="text"
                     placeholder="Owner Name"
-                    error={errors.ownerName}
+                    error={errors.name}
                   />
                   <InputField
                     register={register}

@@ -1,11 +1,13 @@
 import React, { useState, useMemo } from "react";
+import { CreditCard, Clock, XCircle, Wallet, Eye } from "lucide-react";
+import StatsGrid from "../../../components/charts/StatsGrid"; 
 
 const dummyTransactions = [
   {
     id: 1,
     txnId: "TXN001",
     customer: "Ali Khan",
-    amount: 120,
+    amount: "$120",
     method: "Credit Card",
     status: "Success",
     date: "2025-09-16",
@@ -14,7 +16,7 @@ const dummyTransactions = [
     id: 2,
     txnId: "TXN002",
     customer: "Sara Ahmed",
-    amount: 75,
+    amount: "$75",
     method: "Wallet",
     status: "Pending",
     date: "2025-09-17",
@@ -23,7 +25,7 @@ const dummyTransactions = [
     id: 3,
     txnId: "TXN003",
     customer: "Usman Raza",
-    amount: 200,
+    amount: "$200",
     method: "Bank Transfer",
     status: "Failed",
     date: "2025-09-15",
@@ -35,19 +37,61 @@ const Payments = () => {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
 
-  // 🔹 Filter + Search
+  // 🔍 Filter logic
   const filteredTransactions = useMemo(() => {
     return transactions.filter((txn) => {
       const matchesSearch =
         txn.customer.toLowerCase().includes(search.toLowerCase()) ||
         txn.txnId.toLowerCase().includes(search.toLowerCase());
-
       const matchesStatus =
         statusFilter === "All" || txn.status === statusFilter;
-
       return matchesSearch && matchesStatus;
     });
   }, [transactions, search, statusFilter]);
+
+  // 📊 Stats section
+  const stats = [
+    {
+      title: "Total Transactions",
+      value: transactions.length,
+      change: "+8%",
+      trend: "up",
+      icon: CreditCard,
+      color: "from-blue-500 to-indigo-500",
+      bgcolor: "bg-blue-100 dark:bg-blue-900/40",
+      textColor: "text-blue-600 dark:text-blue-400",
+    },
+    {
+      title: "Successful",
+      value: transactions.filter((t) => t.status === "Success").length,
+      change: "+15%",
+      trend: "up",
+      icon: Wallet,
+      color: "from-green-400 to-emerald-500",
+      bgcolor: "bg-green-100 dark:bg-green-900/40",
+      textColor: "text-green-500 dark:text-green-400",
+    },
+    {
+      title: "Pending",
+      value: transactions.filter((t) => t.status === "Pending").length,
+      change: "-3%",
+      trend: "down",
+      icon: Clock,
+      color: "from-yellow-400 to-orange-500",
+      bgcolor: "bg-yellow-100 dark:bg-yellow-900/40",
+      textColor: "text-yellow-500 dark:text-yellow-400",
+    },
+    {
+      title: "Failed",
+      value: transactions.filter((t) => t.status === "Failed").length,
+      change: "-2%",
+      trend: "down",
+      icon: XCircle,
+      color: "from-red-500 to-pink-500",
+      bgcolor: "bg-red-100 dark:bg-red-900/40",
+      textColor: "text-red-500 dark:text-red-400",
+    },
+  ];
 
   return (
     <div className="min-h-screen p-6 bg-slate-50 dark:bg-slate-900 transition-all duration-500 text-slate-800 dark:text-white">
@@ -56,47 +100,22 @@ const Payments = () => {
         <h1 className="text-2xl font-bold">Payments & Transactions</h1>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="p-4 bg-white dark:bg-slate-800 rounded shadow">
-          <p className="text-sm text-slate-500 dark:text-slate-400">
-            Total Transactions
-          </p>
-          <p className="text-xl font-bold">{transactions.length}</p>
-        </div>
-        <div className="p-4 bg-white dark:bg-slate-800 rounded shadow">
-          <p className="text-sm text-slate-500 dark:text-slate-400">Successful</p>
-          <p className="text-xl font-bold text-green-600 dark:text-green-400">
-            {transactions.filter((t) => t.status === "Success").length}
-          </p>
-        </div>
-        <div className="p-4 bg-white dark:bg-slate-800 rounded shadow">
-          <p className="text-sm text-slate-500 dark:text-slate-400">Pending</p>
-          <p className="text-xl font-bold text-yellow-500 dark:text-yellow-400">
-            {transactions.filter((t) => t.status === "Pending").length}
-          </p>
-        </div>
-        <div className="p-4 bg-white dark:bg-slate-800 rounded shadow">
-          <p className="text-sm text-slate-500 dark:text-slate-400">Failed</p>
-          <p className="text-xl font-bold text-red-500 dark:text-red-400">
-            {transactions.filter((t) => t.status === "Failed").length}
-          </p>
-        </div>
-      </div>
+      {/* ✅ Stats */}
+      <StatsGrid stats={stats} />
 
-      {/* Filters & Search */}
-      <div className="flex flex-col md:flex-row gap-4 mb-4">
+      {/* 🔍 Filters */}
+      <div className="flex flex-col md:flex-row gap-4 mt-6 mb-4">
         <input
           type="text"
           placeholder="Search by Customer or Transaction ID..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="p-2 border border-slate-300 dark:border-slate-700 rounded w-full md:w-1/3 bg-white dark:bg-slate-800 dark:text-white"
+          className="border dark:border-slate-700 dark:bg-slate-900 rounded-lg p-2 w-1/3"
         />
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="p-2 border border-slate-300 dark:border-slate-700 rounded bg-white dark:bg-slate-800 dark:text-white"
+          className="border dark:border-slate-700 dark:bg-slate-900 rounded-lg p-2"
         >
           <option value="All">All Statuses</option>
           <option value="Success">Success</option>
@@ -105,47 +124,74 @@ const Payments = () => {
         </select>
       </div>
 
-      {/* Transactions Table */}
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white dark:bg-slate-800 rounded shadow">
-          <thead className="bg-gray-200 dark:bg-slate-700 text-slate-700 dark:text-white">
+      {/* ✅ Stylish Table */}
+      <div className="p-6 bg-white dark:bg-slate-900 rounded-xl shadow overflow-x-auto">
+        <h2 className="text-lg font-semibold mb-4">All Transactions</h2>
+        <table className="min-w-full text-left">
+          <thead>
             <tr>
-              <th className="p-2 text-left">Transaction ID</th>
-              <th className="p-2 text-left">Customer</th>
-              <th className="p-2 text-left">Amount</th>
-              <th className="p-2 text-left">Payment Method</th>
-              <th className="p-2 text-left">Status</th>
-              <th className="p-2 text-left">Date</th>
+              <th className="p-3 border-b dark:border-slate-700">Txn ID</th>
+              <th className="p-3 border-b dark:border-slate-700">Customer</th>
+              <th className="p-3 border-b dark:border-slate-700">Amount</th>
+              <th className="p-3 border-b dark:border-slate-700">
+                Payment Method
+              </th>
+              <th className="p-3 border-b dark:border-slate-700">Status</th>
+              <th className="p-3 border-b dark:border-slate-700">Date</th>
+              <th className="p-3 border-b dark:border-slate-700">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {filteredTransactions.length > 0 ? (
-              filteredTransactions.map((txn) => (
-                <tr
-                  key={txn.id}
-                  className="border-b border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700"
-                >
-                  <td className="p-2">{txn.txnId}</td>
-                  <td className="p-2">{txn.customer}</td>
-                  <td className="p-2">${txn.amount}</td>
-                  <td className="p-2">{txn.method}</td>
-                  <td
-                    className={`p-2 font-semibold ${
+            {filteredTransactions.map((txn) => (
+              <tr
+                key={txn.id}
+                className="hover:bg-gray-50 dark:hover:bg-slate-800 transition"
+              >
+                <td className="p-3 border-b dark:border-slate-700">
+                  {txn.txnId}
+                </td>
+                <td className="p-3 border-b dark:border-slate-700">
+                  {txn.customer}
+                </td>
+                <td className="p-3 border-b dark:border-slate-700">
+                  {txn.amount}
+                </td>
+                <td className="p-3 border-b dark:border-slate-700">
+                  {txn.method}
+                </td>
+                <td className="p-3 border-b dark:border-slate-700">
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-medium ${
                       txn.status === "Success"
-                        ? "text-green-600 dark:text-green-400"
+                        ? "bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-200"
                         : txn.status === "Pending"
-                        ? "text-yellow-500 dark:text-yellow-400"
-                        : "text-red-500 dark:text-red-400"
+                        ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-800 dark:text-yellow-200"
+                        : "bg-red-100 text-red-700 dark:bg-red-800 dark:text-red-200"
                     }`}
                   >
                     {txn.status}
-                  </td>
-                  <td className="p-2">{txn.date}</td>
-                </tr>
-              ))
-            ) : (
+                  </span>
+                </td>
+                <td className="p-3 border-b dark:border-slate-700">
+                  {txn.date}
+                </td>
+                <td className="p-3 border-b dark:border-slate-700">
+                  <button
+                    className="flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline"
+                    onClick={() => alert(`Viewing details for ${txn.txnId}`)}
+                  >
+                    <Eye size={16} /> View
+                  </button>
+                </td>
+              </tr>
+            ))}
+
+            {filteredTransactions.length === 0 && (
               <tr>
-                <td className="p-4 text-center" colSpan={6}>
+                <td
+                  colSpan="7"
+                  className="text-center py-4 text-gray-500 dark:text-slate-400"
+                >
                   No transactions found.
                 </td>
               </tr>

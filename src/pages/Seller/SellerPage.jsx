@@ -31,7 +31,7 @@ const SellerPage = () => {
           menuItems={menuItems}
           title="FoodZilla"
           subtitle="Vendor Dashboard"
-          user={{ name: "Siddiq Shah", role: "Administrator" }}
+          user={{role: "Administrator" }}
         />
         <div className="flex-1 flex flex-col overflow-hidden">
           <Header
