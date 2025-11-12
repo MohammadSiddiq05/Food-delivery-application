@@ -1,6 +1,6 @@
 import * as React from "react";
 import { styled } from "@mui/material/styles";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import {
   ArrowUpRight,
   ArrowDownRight,
@@ -8,6 +8,7 @@ import {
   PlusCircle,
   Edit,
   RefreshCw,
+  Trash2,
 } from "lucide-react";
 import { Package, CheckCircle, AlertTriangle } from "lucide-react";
 import Box from "@mui/material/Box";
@@ -66,33 +67,16 @@ const ProductsManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [file, setFile] = useState(null);
   const [open, setOpen] = useState(false);
-   const { foodList, setFoodList } = React.useContext(StoreContext);
-
-  const [newProduct, setNewProduct] = useState({
-    name: "",
-    price: "",
-    category: "",
-    image: "",
-    description: "",
-  });
   
-  const [products, setProducts] = useState([
-    {
-      id: "P001",
-      name: "Pizza",
-      category: "Fast Food",
-      price: 1200,
-      stock: 15,
-      status: "Active",
-    },
-  ]);
+  // ✅ Get context functions
+  const { food_list, addProduct, deleteProduct, updateProduct } = useContext(StoreContext);
+
   const [formData, setFormData] = useState({
-    id: "",
     name: "",
     category: "",
     price: "",
     stock: "",
-    discription: "",
+    description: "",
     status: "Active",
   });
 
@@ -101,11 +85,11 @@ const ProductsManagement = () => {
     setOpen(false);
     setFile(null);
     setFormData({
-      id: "",
       name: "",
       category: "",
       price: "",
       stock: "",
+      description: "",
       status: "Active",
     });
   };
@@ -127,44 +111,53 @@ const ProductsManagement = () => {
     setFile(selectedFile);
   };
 
+  // ✅ UPDATED: Save product to context (syncs with localStorage automatically)
   const handleSave = () => {
     if (!formData.name || !formData.price || !formData.category) return;
 
     const newProduct = {
-      ...formData,
-      id: "P" + (products.length + 1).toString().padStart(3, "0"),
-      image: file ? URL.createObjectURL(file) : null,
+      name: formData.name,
+      category: formData.category,
+      price: parseFloat(formData.price),
+      description: formData.description,
+      image: file ? URL.createObjectURL(file) : "https://via.placeholder.com/150",
+      stock: formData.stock || 0,
+      status: formData.status,
     };
 
-    setProducts((prev) => [...prev, newProduct]);
+    addProduct(newProduct); // ✅ This saves to context + localStorage
     handleClose();
   };
 
-  
+  // ✅ Delete product from context
+  const handleDelete = (productId) => {
+    if (window.confirm("Are you sure you want to delete this product?")) {
+      deleteProduct(productId);
+    }
+  };
 
+  // ✅ Restock function
   const handleRestock = (productId) => {
     const qty = prompt("Enter quantity to add:");
     if (!qty || isNaN(qty)) return;
-    setProducts((prev) =>
-      prev.map((p) =>
-        p.id === productId
-          ? {
-            ...p,
-            stock: Number(p.stock) + Number(qty),
-            status:
-              Number(p.stock) + Number(qty) < 20 ? "Low Stock" : "Active",
-          }
-          : p
-      )
-    );
+    
+    const product = food_list.find(p => p._id === productId);
+    if (product) {
+      const newStock = Number(product.stock || 0) + Number(qty);
+      updateProduct(productId, {
+        stock: newStock,
+        status: newStock < 20 ? "Low Stock" : "Active",
+      });
+    }
   };
 
-  const filteredProducts = products.filter((product) => {
+  // ✅ Filter products from context
+  const filteredProducts = food_list.filter((product) => {
     const matchStatus =
       statusFilter === "all" || product.status === statusFilter;
     const matchSearch =
-      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.id.toLowerCase().includes(searchTerm.toLowerCase());
+      product.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product._id?.toLowerCase().includes(searchTerm.toLowerCase());
     return matchStatus && matchSearch;
   });
 
@@ -185,7 +178,7 @@ const ProductsManagement = () => {
                     {stat.title}
                   </p>
                   <p className="text-3xl font-bold text-slate-800 dark:text-white mb-4">
-                    {stat.value}
+                    {index === 0 ? food_list.length : stat.value}
                   </p>
                   <div className="flex items-center space-x-2">
                     {stat.trend === "up" ? (
@@ -194,10 +187,11 @@ const ProductsManagement = () => {
                       <ArrowDownRight className="size-4 text-red-500" />
                     )}
                     <span
-                      className={`text-sm font-semibold ${stat.trend === "up"
-                        ? "text-emerald-500"
-                        : "text-red-500"
-                        }`}
+                      className={`text-sm font-semibold ${
+                        stat.trend === "up"
+                          ? "text-emerald-500"
+                          : "text-red-500"
+                      }`}
                     >
                       {stat.change}
                     </span>
@@ -216,6 +210,7 @@ const ProductsManagement = () => {
           );
         })}
       </div>
+
       {/* ✅ Filters & Add Product Button */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <select
@@ -290,11 +285,11 @@ const ProductsManagement = () => {
             />
             <input
               type="text"
-              placeholder="Discription"
+              placeholder="Description"
               className="w-full p-2 border rounded-lg"
-              value={formData.discription}
+              value={formData.description}
               onChange={(e) =>
-                setFormData({ ...formData, discription: e.target.value })
+                setFormData({ ...formData, description: e.target.value })
               }
             />
             {file && (
@@ -322,7 +317,7 @@ const ProductsManagement = () => {
                 "&:hover": { backgroundColor: "#E64D21" },
                 borderRadius: "10px",
                 textTransform: "none",
-                marginBottom: "5px"
+                marginBottom: "5px",
               }}
             >
               Choose Image
@@ -358,7 +353,9 @@ const ProductsManagement = () => {
 
       {/* ✅ Products Table */}
       <div className="p-6 bg-white dark:bg-slate-900 rounded-xl shadow overflow-x-auto">
-        <h2 className="text-lg font-semibold mb-4">All Products</h2>
+        <h2 className="text-lg font-semibold mb-4">
+          All Products ({filteredProducts.length})
+        </h2>
         <table className="min-w-full text-left">
           <thead>
             <tr>
@@ -374,7 +371,7 @@ const ProductsManagement = () => {
           </thead>
           <tbody>
             {filteredProducts.map((product) => (
-              <tr key={product.id}>
+              <tr key={product._id}>
                 <td className="p-3 border-b">
                   {product.image ? (
                     <img
@@ -386,33 +383,34 @@ const ProductsManagement = () => {
                     "—"
                   )}
                 </td>
-                <td className="p-3 border-b">{product.id}</td>
+                <td className="p-3 border-b">{product._id}</td>
                 <td className="p-3 border-b">{product.name}</td>
                 <td className="p-3 border-b">{product.category}</td>
-                <td className="p-3 border-b">{product.price}</td>
-                <td className="p-3 border-b">{product.stock}</td>
+                <td className="p-3 border-b">Rs. {product.price}</td>
+                <td className="p-3 border-b">{product.stock || 0}</td>
                 <td className="p-3 border-b">
                   <span
-                    className={`px-2 py-1 rounded-full text-xs ${product.status === "Active"
-                      ? "bg-green-100 text-green-700"
-                      : "bg-yellow-100 text-yellow-700"
-                      }`}
+                    className={`px-2 py-1 rounded-full text-xs ${
+                      product.status === "Active"
+                        ? "bg-green-100 text-green-700"
+                        : "bg-yellow-100 text-yellow-700"
+                    }`}
                   >
-                    {product.status}
+                    {product.status || "Active"}
                   </span>
                 </td>
                 <td className="p-3 border-b space-x-2">
                   <button
-                    className="text-blue-600 hover:underline"
-                    onClick={() => alert("Edit feature coming soon!")}
-                  >
-                    <Edit size={16} /> Edit
-                  </button>
-                  <button
-                    className="text-emerald-600 hover:underline"
-                    onClick={() => handleRestock(product.id)}
+                    className="text-emerald-600 hover:underline inline-flex items-center gap-1"
+                    onClick={() => handleRestock(product._id)}
                   >
                     <RefreshCw size={16} /> Restock
+                  </button>
+                  <button
+                    className="text-red-600 hover:underline inline-flex items-center gap-1"
+                    onClick={() => handleDelete(product._id)}
+                  >
+                    <Trash2 size={16} /> Delete
                   </button>
                 </td>
               </tr>

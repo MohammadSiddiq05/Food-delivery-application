@@ -1,11 +1,53 @@
-import { createContext, useState } from "react";
-import { food_list } from "../assets/assets";
+import { createContext, useState, useEffect } from "react";
+import { food_list as initialFoodList } from "../assets/assets";
 
 export const StoreContext = createContext(null);
 
 const StoreContextProvider = ({ children }) => {
+  // Initialize food_list from localStorage or use the initial static list
+  const [food_list, setFoodList] = useState(() => {
+    const savedProducts = localStorage.getItem('food_products');
+    if (savedProducts) {
+      return JSON.parse(savedProducts);
+    }
+    // Save initial list to localStorage on first load
+    localStorage.setItem('food_products', JSON.stringify(initialFoodList));
+    return initialFoodList;
+  });
+
   const [cartItems, setCartItems] = useState({});
 
+  // Save food_list to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('food_products', JSON.stringify(food_list));
+  }, [food_list]);
+
+  // Function to add a new product (for admin page)
+  const addProduct = (product) => {
+    const newProduct = {
+      ...product,
+      _id: "P" + Date.now().toString(), // Generate unique ID
+      createdAt: new Date().toISOString()
+    };
+    setFoodList((prev) => [...prev, newProduct]);
+    return newProduct;
+  };
+
+  // Function to update a product (for admin page)
+  const updateProduct = (productId, updatedData) => {
+    setFoodList((prev) =>
+      prev.map((product) =>
+        product._id === productId ? { ...product, ...updatedData } : product
+      )
+    );
+  };
+
+  // Function to delete a product (for admin page)
+  const deleteProduct = (productId) => {
+    setFoodList((prev) => prev.filter((product) => product._id !== productId));
+  };
+
+  // Existing cart functions
   const addToCart = (itemId) => {
     if (!cartItems[itemId]) {
       setCartItems((prev) => ({ ...prev, [itemId]: 1 }));
@@ -46,6 +88,11 @@ const StoreContextProvider = ({ children }) => {
     removeFromCart,
     getTotalQuantity,
     getTotalCartAmount,
+    // New functions for admin
+    addProduct,
+    updateProduct,
+    deleteProduct,
+    setFoodList, // For compatibility with existing code
   };
 
   return (
