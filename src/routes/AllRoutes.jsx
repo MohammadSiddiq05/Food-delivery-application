@@ -16,58 +16,70 @@ import Navbar from '../components/layout/Navbar';
 import Home from '../pages/home/Home';
 
 const AllRoutes = ({ setShowNavbar }) => {
-    const location = useLocation();
+  const location = useLocation();
 
-    const hideNavbarRoutes = ["/SellerPage", "/RiderPage", "/Main", "/CustomerSignUp", "/CustomerLogin", "/SellerSignUp", "/SellerLogin", "/RiderSignUp", "/RiderLogin"];
+  const hideNavbarRoutes = [
+    "/SellerPage",
+    "/RiderPage",
+    "/Main",
+    "/CustomerSignUp",
+    "/CustomerLogin",
+    "/SellerSignUp",
+    "/SellerLogin",
+    "/RiderSignUp",
+    "/RiderLogin"
+  ];
 
-    const shouldHide = hideNavbarRoutes.includes(location.pathname);
+  const shouldHide = hideNavbarRoutes.includes(location.pathname);
 
-    return (
-        <>
-            {!shouldHide && <Navbar setShowNavbar={setShowNavbar} />}
+  return (
+    <>
+      {!shouldHide && <Navbar setShowNavbar={setShowNavbar} />}
 
-            <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/cart" element={<Cart />} />
-                <Route path="/order" element={<PlaceOrder />} />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/order" element={<PlaceOrder />} />
 
-                <Route path="/CustomerSignUp" element={<CustomerSignUp />} />
-                <Route path="/CustomerLogin" element={<CustomerLogin />} />
-                <Route
-                    path="/"
-                    element={
-                        <PrivateRoute allowedRole="customer">
-                            <Home />
-                        </PrivateRoute>
-                    }
-                />
+        <Route path="/CustomerSignUp" element={<CustomerSignUp />} />
+        <Route path="/CustomerLogin" element={<CustomerLogin />} />
+        <Route
+          path="/"
+          element={
+            <PrivateRoute allowedRole="customer">
+              <Home />
+            </PrivateRoute>
+          }
+        />
 
-                <Route path="/SellerSignUp" element={<SellerSignUp />} />
-                <Route path="/SellerLogin" element={<SellerLogin />} />
-                <Route
-                    path="/SellerPage"
-                    element={
-                        <PrivateRoute allowedRole="seller">
-                            <SellerPage />
-                        </PrivateRoute>
-                    }
-                />
+        <Route path="/SellerSignUp" element={<SellerSignUp />} />
+        <Route path="/SellerLogin" element={<SellerLogin />} />
+        <Route
+          path="/SellerPage"
+          element={
+            <PrivateRoute allowedRole="seller">
+              <SellerPage />
+            </PrivateRoute>
+          }
+        />
 
-                <Route path="/RiderSignUp" element={<RiderSignUp />} />
-                <Route path="/RiderLogin" element={<RiderLogin />} />
-                <Route
-                    path="/RiderPage"
-                    element={
-                        <PrivateRoute allowedRole="rider">
-                            <RiderPage />
-                        </PrivateRoute>
-                    }
-                />
-                <Route path="/Main" element={<Main />} />
-            </Routes>
-            <Footer />
-        </>
-    );
-}
+        <Route path="/RiderSignUp" element={<RiderSignUp />} />
+        <Route path="/RiderLogin" element={<RiderLogin />} />
+        <Route
+          path="/RiderPage"
+          element={
+            <PrivateRoute allowedRole="rider">
+              <RiderPage />
+            </PrivateRoute>
+          }
+        />
 
-export default AllRoutes
+        <Route path="/Main" element={<Main />} />
+      </Routes>
+
+      <Footer />
+    </>
+  );
+};
+
+export default AllRoutes;
