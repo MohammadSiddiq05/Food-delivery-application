@@ -2,8 +2,8 @@ import { Bell, ChevronDown, Menu, Settings } from "lucide-react";
 import { handleLogout } from "../../utils";
 import { useNavigate } from "react-router";
 import { useAuthContext } from "../hooks/useAuth";
-import userImage from '../../../public/images.png';
 import { Popover } from "antd";
+import userImage from '../../assets/user.png'
 
 const Header = ({ onToggleSidebar }) => {
   const navigate = useNavigate();

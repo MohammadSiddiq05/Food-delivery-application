@@ -1,8 +1,8 @@
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 import logo from "../../assets/Logo.png";
-import userImage from "../../../public/images.png";
 import { useAuthContext } from "../hooks/useAuth";
+import userImage from '../../assets/user.png'
 
 const Sidebar = ({
   menu,
