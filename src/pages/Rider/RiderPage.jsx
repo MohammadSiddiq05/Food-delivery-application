@@ -1,7 +1,6 @@
 import { useState } from "react";
 import Sidebar from "../../components/layout/Sidebar";
 import Header from "../../components/layout/Header";
-import { useAuthContext } from "../../components/hooks/useAuth";
 
 import DeliveryManagement from "./DeliveryManagement";
 import EarningsPayments from "./EarningsPayments";
