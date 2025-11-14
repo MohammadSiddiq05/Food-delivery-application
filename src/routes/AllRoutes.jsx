@@ -9,7 +9,7 @@ import SellerLogin from '../pages/Auth/SellerLogin';
 import SellerPage from '../pages/Seller/SellerPage';
 import RiderSignUp from '../pages/Auth/RiderSignUp';
 import RiderLogin from '../pages/Auth/RiderLogin';
-import RiderPage from '../pages/rider/RiderPage.jsx';
+import RiderPage from '../pages/rider/RiderPage';
 import Main from '../pages/MainPage';
 import Footer from '../components/layout/Footer';
 import Navbar from '../components/layout/Navbar';
