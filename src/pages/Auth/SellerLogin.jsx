@@ -87,7 +87,7 @@ const SellerLogin = () => {
                   </p>
                 }
                 btnText={"Login"}
-                linkTo={"../SellerDashboard/SellerSignUp"}
+                linkTo={"/SellerSignUp"}
               />
             </form>
           </div>

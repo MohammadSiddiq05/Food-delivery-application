@@ -48,22 +48,22 @@ const CustomerSignUp = () => {
     try {
       const userCred = await registerUser(
         {
-          email:data.Email,
+          email:data.email,
           password:data.password,
           role:"customer",
           extraData:{
-            fullName: data.FullName,
+            name: data.name,
             phoneNumber: data.phoneNumber,
           }
         }
       )
       const userData = {
       uid: userCred.user.uid,
-      email: data.Email,
+      email: data.email,
       role: "customer",
     };
     localStorage.setItem("user", JSON.stringify(userData));
-      if(data.Email){
+      if(data.email){
         navigate("/")
       }
     } catch (error) {
@@ -97,7 +97,7 @@ const CustomerSignUp = () => {
                 name="email"
                 type="email"
                 placeholder="Email"
-                error={errors.Email}
+                error={errors.email}
               />
               <InputField
                 register={register}

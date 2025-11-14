@@ -8,22 +8,19 @@ import InputField from "../../components/common/InputField";
 import BtnSignUp from "../../components/common/BtnSignUp";
 
 const formSchema = z.object({
-  Email: z
+  email: z
     .string()
     .email({ message: "Enter a valid email" })
     .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, {
       message: "Email is not valid",
     }),
-
   password: z
     .string()
     .min(6, { message: "Password must be at least 6 characters" })
     .regex(/[a-z]/, { message: "Must include at least 1 lowercase letter" })
     .regex(/[A-Z]/, { message: "Must include at least 1 uppercase letter" })
     .regex(/\d/, { message: "Must include at least 1 number" })
-    .regex(/[@$!%*?&]/, {
-      message: "Must include at least 1 special character (@$!%*?&)",
-    }),
+    .regex(/[@$!%*?&]/, { message: "Must include at least 1 special character (@$!%*?&)" }),
 });
 
 const CustomerLogin = () => {
@@ -33,29 +30,31 @@ const CustomerLogin = () => {
     formState: { errors, isSubmitting },
   } = useForm({ resolver: zodResolver(formSchema) });
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const onSubmitAll = async (data) => {
     try {
-      await loginUser(data.Email, data.password);
+      await loginUser(data.email, data.password);
+
       const userData = {
-        email: data.Email,
+        email: data.email,
         role: "customer",
       };
+
       localStorage.setItem("user", JSON.stringify(userData));
-      if (data.Email && data.password && userData.role === "customer") {
-        navigate("/")
-      }
+
+      navigate("/"); 
     } catch (error) {
-      console.error("Login Failed:", error.message);
+      console.error("Login Failed:", error.code, error.message);
       alert(error.message);
     }
   };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-8">
       <div className="flex flex-col md:flex-row w-11/12 max-w-5xl gap-8 md:gap-12">
         <div className="flex flex-col justify-center items-center p-8 w-1/2">
-          <img src={logo} alt="App Icon" className="mb-4" />
+          <img src={logo} alt="App Logo" className="mb-4" />
           <p className="text-lg text-[#0E2A45] text-center leading-relaxed">
             Fast & Fresh <br /> At Your Doorstep 🍴
           </p>
@@ -66,10 +65,10 @@ const CustomerLogin = () => {
             <form className="space-y-4" onSubmit={handleSubmit(onSubmitAll)}>
               <InputField
                 register={register}
-                name="Email"
+                name="email"
                 type="email"
                 placeholder="Email"
-                error={errors.Email}
+                error={errors.email}
               />
               <InputField
                 register={register}
@@ -83,7 +82,7 @@ const CustomerLogin = () => {
                 isSubmitting={isSubmitting}
                 linkText={
                   <p className="text-gray-600">
-                    Create an account ?{" "}
+                    Create an account?{" "}
                     <span className="text-[#E64D21]">Sign Up</span>
                   </p>
                 }
