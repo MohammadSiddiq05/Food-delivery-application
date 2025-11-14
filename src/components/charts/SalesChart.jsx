@@ -1,11 +1,5 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
-
-const salesData = [
- { name: "Burgers", value: 21.24, color: "#10B981" },  // 21.2%
-  { name: "Pizzas", value: 16.81, color: "#3B82F6" },  // 16.8%
-  { name: "Biryani", value: 26.55, color: "#F59E0B" }, // 26.5%
-  { name: "Drinks", value: 35.40, color: "#EF4444" },  // 35.4%
-];
+import {salesData} from '../../data/Stats'
 
 const SalesChart = () => {
   return (

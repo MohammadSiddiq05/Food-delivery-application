@@ -1,6 +1,6 @@
 import { Route, Routes, useLocation } from 'react-router';
-import Cart from '../pages/Cart/Cart';
-import PlaceOrder from '../pages/customer/PlaceOrder/PlaceOrder';
+import Cart from '../pages/customer/Cart';
+import PlaceOrder from '../pages/customer/PlaceOrder';
 import CustomerSignUp from '../pages/Auth/CustomerSignUp';
 import CustomerLogin from '../pages/Auth/CustomerLogin';
 import PrivateRoute from './PrivateRoute';
@@ -10,10 +10,10 @@ import SellerPage from '../pages/Seller/SellerPage';
 import RiderSignUp from '../pages/Auth/RiderSignUp';
 import RiderLogin from '../pages/Auth/RiderLogin';
 import RiderPage from '../pages/rider/RiderPage';
-import Main from '../pages/Main';
+import Main from '../pages/MainPage';
 import Footer from '../components/layout/Footer';
-import Navbar from '../components/Navbar/Navbar';
-import Home from '../pages/customer/Home/Home';
+import Navbar from '../components/layout/Navbar';
+import Home from '../pages/home/Home';
 
 const AllRoutes = ({ setShowNavbar }) => {
     const location = useLocation();

@@ -1,25 +1,22 @@
 import { useState } from "react";
 import Sidebar from "../../components/layout/Sidebar";
 import Header from "../../components/layout/Header";
-import Dashboard from "../Seller/SellerDashboard/Dashboard";
-import AnalyticsReports from "../Seller/SellerDashboard/analytics/AnalyticsReports";
-import AnalyticsInsights from "../Seller/SellerDashboard/analytics/AnalyticsInsights";
-import Orders from "../Seller/SellerDashboard/Orders";
-import Products from "../Seller/SellerDashboard/Products";
-import Payments from "../Seller/SellerDashboard/Payments";
-import Messages from "../Seller/SellerDashboard/Messages";
+import Dashboard from "./Dashboard";
+import Orders from "./Orders";
+import Products from "./Products";
+import Payments from "./Payments";
+import Messages from "./Messages";
+import { menuItems, stats } from "../../data/Stats";
+import StatsGrid from "../../components/charts/StatsGrid";
 import ChartSection from "../../components/charts/ChartSection";
 import TableSection from "../../components/charts/TableSection";
-import StatsGrid from "../../components/charts/StatsGrid";
-
-
-
-
-import { stats, menuItems } from "../../data/Stats";
+import AnalyticsReports from "./analytics/AnalyticsReports";
+import AnalyticsInsights from "./analytics/AnalyticsInsights";
 
 const SellerPage = () => {
   const [sidebarMenu, setSidebarMenu] = useState(false);
   const [currentPage, setCurrentPage] = useState("dashboard");
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 transition-all duration-500">
       <div className="flex h-screen overflow-hidden">
@@ -31,13 +28,11 @@ const SellerPage = () => {
           menuItems={menuItems}
           title="FoodZilla"
           subtitle="Vendor Dashboard"
-          user={{role: "Administrator" }}
+          role="Vendor"
         />
+
         <div className="flex-1 flex flex-col overflow-hidden">
-          <Header
-            menuCollapsed={sidebarMenu}
-            onToggleSidebar={() => setSidebarMenu(!sidebarMenu)}
-          />
+          <Header onToggleSidebar={() => setSidebarMenu(!sidebarMenu)} />
 
           <main className="flex-1 overflow-y-auto bg-transparent">
             <div className="p-6 space-y-6">
@@ -49,7 +44,6 @@ const SellerPage = () => {
                   <TableSection />
                 </>
               )}
-
               {currentPage === "reports" && <AnalyticsReports />}
               {currentPage === "insights" && <AnalyticsInsights />}
               {currentPage === "order" && <Orders />}

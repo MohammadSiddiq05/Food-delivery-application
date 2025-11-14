@@ -1,5 +1,3 @@
-// RegionTrendsChart.jsx
-import React from "react";
 import {
   BarChart,
   Bar,
@@ -11,14 +9,7 @@ import {
   Legend,
 } from "recharts";
 
-// Dummy region trend data
-const regionData = [
-  { region: "North", sales: 40000 },
-  { region: "South", sales: 30000 },
-  { region: "East", sales: 35000 },
-  { region: "West", sales: 25000 },
-  { region: "Central", sales: 20000 },
-];
+import {regionData} from '../../data/Stats'
 
 const RegionTrendsChart = () => {
   return (
@@ -33,7 +24,6 @@ const RegionTrendsChart = () => {
           </p>
         </div>
       </div>
-
       <div className="h-80">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart

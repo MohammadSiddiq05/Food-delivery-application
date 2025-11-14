@@ -4,8 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { loginUser } from "../../config/firebase/auth";
 import { useNavigate } from "react-router-dom";
-import InputField from "../../components/ui/InputField";
-import BtnSignUp from "../../components/ui/BtnSignUp";
+import InputField from "../../components/common/InputField";
+import BtnSignUp from "../../components/common/BtnSignUp";
 
 const formSchema = z.object({
   Email: z
@@ -33,6 +33,7 @@ const RiderLogin = () => {
   } = useForm({ resolver: zodResolver(formSchema) });
 
   const navigate = useNavigate()
+  
   const onSubmitAll = async (data) => {
     try {
       await loginUser(data.Email, data.password);
@@ -41,7 +42,7 @@ const RiderLogin = () => {
         role: "rider",
       };
       localStorage.setItem("user", JSON.stringify(userData));
-      if (data.Email) {
+      if (data.Email && data.password) {
         navigate('/RiderPage')
       }
 

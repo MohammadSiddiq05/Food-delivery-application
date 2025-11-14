@@ -4,11 +4,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { registerUser } from "../../config/firebase/auth";
 import { useNavigate } from "react-router-dom";
-import InputField from "../../components/ui/InputField";
-import BtnSignUp from "../../components/ui/BtnSignUp";
+import InputField from "../../components/common/InputField";
+import BtnSignUp from "../../components/common/BtnSignUp";
+import { useAuthContext } from "../../components/hooks/useAuth";
 
 const formSchema = z.object({
-  FullName: z
+  name: z
     .string()
     .min(2, {
       message: "Your name must have more than 2 characters",
@@ -17,7 +18,7 @@ const formSchema = z.object({
       message: "Your name must have less than 20 characters",
     }),
 
-  Email: z
+  email: z
     .string()
     .email({ message: "Enter a valid email" })
     .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, {
@@ -48,6 +49,7 @@ const formSchema = z.object({
     }),
 });
 const RiderSignUp = () => {
+  const {dispatch} = useAuthContext()
   const {
     register,
     handleSubmit,
@@ -60,20 +62,23 @@ const RiderSignUp = () => {
   const onSubmitAll = async (data) => {
     try {
       const userCred = await registerUser({
-        email: data.Email,
+        email: data.email,
         password: data.password,
         role: "rider",
         extraData: {
-          name: data.FullName,
+          name: data.name,
           phone: data.phoneNumber,
           vehicleType: data.vehicleType,
           licenseNumber: data.licenseNumber,
         },
       });
-
+        dispatch({
+          type: "REGISTER_USER",
+          payload: data,
+        })
       const userData = {
         uid: userCred.user.uid,
-        email: userCred.Email,
+        email: userCred.email,
         role: "rider",
       };
       localStorage.setItem("user", JSON.stringify(userData));
@@ -102,17 +107,17 @@ const RiderSignUp = () => {
                 <div className="grid grid-cols-1 gap-4">
                   <InputField
                     register={register}
-                    name="FullName"
+                    name="name"
                     type="text"
                     placeholder="Full Name"
-                    error={errors.FullName}
+                    error={errors.name}
                   />
                   <InputField
                     register={register}
-                    name="Email"
+                    name="email"
                     type="email"
                     placeholder="Email"
-                    error={errors.Email}
+                    error={errors.email}
                   />
 
                   <InputField

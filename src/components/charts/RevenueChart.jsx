@@ -8,20 +8,7 @@ import {
   Tooltip,
 } from "recharts";
 
-const financeData = [
-  { month: "January", revenue: 12500, expense: 7800 },
-  { month: "February", revenue: 14800, expense: 9200 },
-  { month: "March", revenue: 17300, expense: 10100 },
-  { month: "April", revenue: 16000, expense: 8500 },
-  { month: "May", revenue: 19000, expense: 11000 },
-  { month: "June", revenue: 21000, expense: 11800 },
-  { month: "July", revenue: 23000, expense: 13000 },
-  { month: "August", revenue: 25000, expense: 14000 },
-  { month: "September", revenue: 24000, expense: 13500 },
-  { month: "October", revenue: 26000, expense: 14500 },
-  { month: "November", revenue: 27500, expense: 15500 },
-  { month: "December", revenue: 30000, expense: 17000 },
-];
+ import {financeData} from '../../data/Stats';
 
 const RevenueChart = () => {
   return (
@@ -82,14 +69,12 @@ const RevenueChart = () => {
               }}
               formatter={(value) => [`$${value.toLocaleString()}`, ""]}
             />
-            {/* Revenue bar now orange */}
             <Bar
               dataKey="revenue"
               fill="#E64D21"
               radius={[4, 4, 0, 0]}
               maxBarSize={40}
             />
-            {/* Expenses bar stays gray */}
             <Bar
               dataKey="expense"
               fill="url(#expensesGradient)"
@@ -98,7 +83,6 @@ const RevenueChart = () => {
             />
 
             <defs>
-              {/* Gray gradient for expenses */}
               <linearGradient id="expensesGradient" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="#94a3b8" />
                 <stop offset="100%" stopColor="#64748b" />

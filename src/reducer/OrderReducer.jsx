@@ -11,7 +11,6 @@ const OrderReducer = (state, action) => {
     deliveries: [action.payload, ...state.deliveries],
   };
 
-
     case "RESET_ORDER":
       return {
         ...state,

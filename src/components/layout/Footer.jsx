@@ -1,4 +1,3 @@
-// src/components/Footer.jsx
 import logo from '../../assets/Logo.png'
 import {
   Mail,
@@ -37,19 +36,19 @@ const Footer = () => {
               <div className="flex items-center gap-2">
                 <Mail className="size-4 text-[#E64D21]" />
                 <a
-                  href="mailto:support@foodzilla.example"
+                  href="mailto:siddiqshah478@gmail.com"
                   className="hover:text-[#E64D21] text-slate-600 dark:text-slate-300"
                 >
-                  support@foodzilla.example
+                  FoodZilla@gmail.com
                 </a>
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="size-4 text-[#E64D21]" />
                 <a
-                  href="tel:+922100000000"
+                  href="tel:+92 3308110430"
                   className="text-slate-600 dark:text-slate-300 hover:text-[#E64D21]"
                 >
-                  +92 21 0000 0000
+                  +92 3308110430
                 </a>
               </div>
             </div>
@@ -70,7 +69,7 @@ const Footer = () => {
                 <Instagram className="size-4" />
               </a>
               <a
-                href="#"
+                href="https://github.com/MohammadSiddiq05"
                 aria-label="GitHub"
                 className="p-2 rounded-md hover:bg-[#E64D21] transition"
               >
@@ -79,7 +78,6 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Quick links */}
           <div className="grid grid-cols-2 md:grid-cols-2 gap-4">
             <div>
               <h4 className="font-semibold mb-3">Company</h4>
@@ -124,7 +122,6 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Newsletter */}
           <div>
             <h4 className="font-semibold mb-3">Get updates</h4>
             <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">
@@ -163,7 +160,6 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* bottom row */}
         <div className="mt-10 border-t border-slate-100 dark:border-slate-800 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-slate-600 dark:text-slate-400">
             © {new Date().getFullYear()} FoodZilla. All rights reserved.

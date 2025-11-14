@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer, useState } from "react";
+import { createContext, useReducer } from "react";
 import reducer from '../reducer/AuthReducer'
 
 const registerValues = {
@@ -6,11 +6,10 @@ const registerValues = {
     email: "",
     phoneNumber: ""
 }
-const AuthContext = createContext(registerValues);
+export const AuthContext = createContext(registerValues);
 
 const AuthProvider = ({ children }) => {
     const [state, dispatch] = useReducer(reducer, registerValues)
-    // console.log(state)
     return (
         <AuthContext.Provider value={{ state, dispatch }}>{children}</AuthContext.Provider>
     )
@@ -18,6 +17,3 @@ const AuthProvider = ({ children }) => {
 
 export default AuthProvider;
 
-export const useAuthContext = () => {
-    return useContext(AuthContext)
-}

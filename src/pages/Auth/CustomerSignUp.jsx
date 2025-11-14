@@ -4,16 +4,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { email, z } from "zod";
 import { registerUser } from "../../config/firebase/auth";
 import { useNavigate } from "react-router-dom";
-import InputField from "../../components/ui/InputField";
-import BtnSignUp from "../../components/ui/BtnSignUp";
+import InputField from "../../components/common/InputField";
+import BtnSignUp from "../../components/common/BtnSignUp";
 
 const formSchema = z.object({
-  FullName: z
+  name: z
     .string()
     .min(2, { message: "Your full name must have more than 2 characters" })
     .max(20, { message: "Your full name must have less than 20 characters" }),
 
-  Email: z
+  email: z
     .string()
     .email({ message: "Enter a valid email" })
     .regex(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, {
@@ -87,14 +87,14 @@ const CustomerSignUp = () => {
             <form className="space-y-4" onSubmit={handleSubmit(onSubmitAll)}>
               <InputField
                 register={register}
-                name="FullName"
+                name="name"
                 type="text"
                 placeholder="Full Name"
                 error={errors.FullName}
               />
               <InputField
                 register={register}
-                name="Email"
+                name="email"
                 type="email"
                 placeholder="Email"
                 error={errors.Email}

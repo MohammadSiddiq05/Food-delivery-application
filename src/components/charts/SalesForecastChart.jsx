@@ -1,5 +1,3 @@
-// SalesForecastChart.jsx
-import React from "react";
 import {
   LineChart,
   Line,
@@ -10,21 +8,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-// Dummy forecast data
-const forecastData = [
-  { month: "January", forecast: 12000 },
-  { month: "February", forecast: 14000 },
-  { month: "March", forecast: 16000 },
-  { month: "April", forecast: 18000 },
-  { month: "May", forecast: 20000 },
-  { month: "June", forecast: 22000 },
-  { month: "July", forecast: 24000 },
-  { month: "August", forecast: 26000 },
-  { month: "September", forecast: 28000 },
-  { month: "October", forecast: 30000 },
-  { month: "November", forecast: 32000 },
-  { month: "December", forecast: 35000 },
-];
+import {forecastData} from '../../data/Stats'
 
 const SalesForecastChart = () => {
   return (

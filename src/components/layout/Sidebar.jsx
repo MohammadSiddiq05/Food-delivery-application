@@ -1,7 +1,8 @@
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 import logo from "../../assets/Logo.png";
-import { useAuthContext } from "../../context/AuthContext";
+import userImage from "../../../public/images.png";
+import { useAuthContext } from "../hooks/useAuth";
 
 const Sidebar = ({
   menu,
@@ -10,33 +11,31 @@ const Sidebar = ({
   menuItems,
   title,
   subtitle,
-  user,
+  role,
 }) => {
-  const { state: { name } } = useAuthContext();
-  const [expandItems, setExpandItems] = useState(new Set(["analytics"]));
+  const { state } = useAuthContext();
+  const name = state?.name || "User";
+
+  const [expandItems, setExpandItems] = useState(new Set());
 
   const toggleExpanded = (itemId) => {
     const newExpanded = new Set(expandItems);
-    if (newExpanded.has(itemId)) {
-      newExpanded.delete(itemId);
-    } else {
-      newExpanded.add(itemId);
-    }
+    if (newExpanded.has(itemId)) newExpanded.delete(itemId);
+    else newExpanded.add(itemId);
     setExpandItems(newExpanded);
   };
 
   return (
     <div
-      className={`${menu ? "w-20" : "w-72"
-        } transition-all duration-300 ease-in-out bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-r border-slate-200/50 dark:border-slate-700/50 flex flex-col relative z-10`}
+      className={`${
+        menu ? "w-20" : "w-72"
+      } transition-all duration-300 ease-in-out bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-r border-slate-200/50 dark:border-slate-700/50 flex flex-col relative z-10`}
     >
-      {/* Top logo section stays same */}
       <div className="p-6 border-b border-slate-200/50 dark:border-slate-700/50">
         <div className="flex items-center space-x-3">
-          <div className="size-10 bg-gradient-to-r from-white to-gray-200  rounded-xl flex items-center justify-center">
-            <img src={logo} alt="" />
+          <div className="size-10 bg-gradient-to-r from-white to-gray-200 rounded-xl flex items-center justify-center">
+            <img src={logo} alt="logo" />
           </div>
-
           {!menu && (
             <div>
               <h1 className="text-xl font-bold text-slate-800 dark:text-white">
@@ -50,20 +49,18 @@ const Sidebar = ({
         </div>
       </div>
 
-      <nav className="flex-1 p-4 space-y-2 overflow-y-auto ">
+      <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
         {menuItems.map((item) => (
           <div key={item.id}>
             <button
-              className={`w-full flex items-center justify-between p-3 rounded-xl transition-all duration-200  ${currentPage === item.id
-                  ? "bg-[#E64D21] text-white shadow-lg" // 🔶 Active item orange
-                  : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/50 "
-                }`}
+              className={`w-full flex items-center justify-between p-3 rounded-xl transition-all duration-200 ${
+                currentPage === item.id
+                  ? "bg-[#E64D21] text-white shadow-lg"
+                  : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/50"
+              }`}
               onClick={() => {
-                if (item.subMenu) {
-                  toggleExpanded(item.id);
-                } else {
-                  onPageChange(item.id);
-                }
+                if (item.subMenu) toggleExpanded(item.id);
+                else onPageChange(item.id);
               }}
             >
               <div className="flex items-center space-x-3">
@@ -74,8 +71,9 @@ const Sidebar = ({
               </div>
               {!menu && item.subMenu && (
                 <ChevronDown
-                  className={`size-4 transition-transform ${expandItems.has(item.id) ? "rotate-180" : ""
-                    }`}
+                  className={`size-4 transition-transform ${
+                    expandItems.has(item.id) ? "rotate-180" : ""
+                  }`}
                 />
               )}
             </button>
@@ -86,10 +84,11 @@ const Sidebar = ({
                   <button
                     key={subItem.id}
                     onClick={() => onPageChange(subItem.id)}
-                    className={`w-full text-left p-2 text-sm rounded-lg transition-all ${currentPage === subItem.id
-                        ? "bg-[#E64D21] text-white" // 🔶 Active submenu orange
+                    className={`w-full text-left p-2 text-sm rounded-lg transition-all ${
+                      currentPage === subItem.id
+                        ? "bg-[#E64D21] text-white"
                         : "text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/50"
-                      }`}
+                    }`}
                   >
                     {subItem.label}
                   </button>
@@ -101,20 +100,18 @@ const Sidebar = ({
       </nav>
 
       {!menu && (
-        <div className="p-4 border-t border-slate-200/50 dark:border-slate-700/50 ">
-          <div className="flex items-center space-x-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 ">
+        <div className="p-4 border-t border-slate-200/50 dark:border-slate-700/50">
+          <div className="flex items-center space-x-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50">
             <img
-              src="null"
-              alt=""
-              className="size-10 rounded-full ring-2 ring-blue-500 "
+              src={userImage}
+              alt="user"
+              className="size-10 rounded-full ring-2 ring-blue-500"
             />
-            <div className="flex-1 min-w-0 ">
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-slate-800 dark:text-white truncate">
-                  {name.charAt(0).toUpperCase() + name.slice(1)}
-                </p>
-                <p className="text-xs text-slate-500 truncate">{user.role}</p>
-              </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-slate-800 dark:text-white truncate">
+                {name.charAt(0).toUpperCase() + name.slice(1)}
+              </p>
+              <p className="text-xs text-slate-500 truncate">{role}</p>
             </div>
           </div>
         </div>

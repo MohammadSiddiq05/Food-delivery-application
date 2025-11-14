@@ -9,13 +9,9 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
+import {data} from '../../data/Stats'
 const CityChart = () => {
-  // Dummy city-wise sales data
-  const data = [
-    { city: "Karachi", revenue: 14200 },
-    { city: "Lahore", revenue: 8900 },
-    { city: "Islamabad", revenue: 7200 },
-  ];
+  
 
   return (
     <ResponsiveContainer width="100%" height={400}>

@@ -4,9 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { registerUser } from "../../config/firebase/auth";
 import { useNavigate } from "react-router-dom";
-import InputField from "../../components/ui/InputField";
-import BtnSignUp from "../../components/ui/BtnSignUp";
-import { useAuthContext } from "../../context/AuthContext";
+import InputField from "../../components/common/InputField";
+import BtnSignUp from "../../components/common/BtnSignUp";
+import { useAuthContext } from "../../components/hooks/useAuth";
 
 const formSchema = z.object({
   restaurantName: z
@@ -59,8 +59,7 @@ const formSchema = z.object({
 });
 
 const SellerSignUp = () => {
-  const { state, dispatch } = useAuthContext();
-  // console.log(state, dispatch)
+  const { dispatch } = useAuthContext();
   const {
     register,
     handleSubmit,
@@ -72,7 +71,6 @@ const SellerSignUp = () => {
   const onSubmitAll = async (data) => {
     try {
       const userCred = await registerUser({
-        // uid: userCred.user.uid,
         email: data.email,
         role: "seller",
         password: data.password,
@@ -91,6 +89,7 @@ const SellerSignUp = () => {
       const userData = {
         uid: userCred.user.uid,
         email: userCred.user.email,
+        name: data.name,
         role: "seller",
       }
       localStorage.setItem("user", JSON.stringify(userData));

@@ -4,8 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { loginUser } from "../../config/firebase/auth";
 import { useNavigate } from "react-router-dom";
-import InputField from "../../components/ui/InputField";
-import BtnSignUp from "../../components/ui/BtnSignUp";
+import InputField from "../../components/common/InputField";
+import BtnSignUp from "../../components/common/BtnSignUp";
 
 const formSchema = z.object({
   email: z
@@ -36,16 +36,14 @@ const SellerLogin = () => {
 
   const onSubmitAll = async (data) => {
     try {
-      const userCred = await loginUser(data.email, data.password);
-
+      await loginUser(data.email, data.password);
       const userData = {
-        uid: userCred.user.uid,
         email: data.email,
         role: "seller",
       };
 
       localStorage.setItem("user", JSON.stringify(userData));
-      navigate("/SellerPage");
+      if (data.email && data.password && userData.role === "seller") { navigate("/SellerPage"); }
     } catch (err) {
       alert(err.message);
     }
