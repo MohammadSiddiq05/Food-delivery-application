@@ -1,3 +1,3 @@
 ## App Architecture
 
-![App Architecture](docs/architecture.png)
+![Food App Architecture](docs/FoodArchitect.png)
